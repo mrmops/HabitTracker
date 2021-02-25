@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/habitColor"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/color_habit"
+        android:src="@color/black" />
+
+    <TextView
+        android:id="@+id/habit_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:maxLength="35"
+        android:maxLines="1"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/habitColor"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Name of habit!" />
+
+    <TextView
+        android:id="@+id/habit_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
+        app:layout_constraintStart_toStartOf="@+id/habit_name"
+        app:layout_constraintTop_toBottomOf="@+id/habit_name"
+        tools:text="Mon, The, Thu, Wen, Fri, Sat, Sun" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/habit_details"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:constraint_referenced_ids="description, details_layout"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/habitColor">
+
+        <TextView
+            android:id="@+id/habit_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Type" />
+
+        <TextView
+            android:id="@+id/habit_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Priority" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/details_layout"
+        tools:text="Description" />
+
+    <ImageView
+        android:id="@+id/details_button"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:src="@drawable/round_keyboard_arrow_down_black_18"
+        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/reveal_description" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

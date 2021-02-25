@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">HabitTracker</string>
+    <string name="add_habit">Добавить новую привычку</string>
+    <string name="color_habit">Цвет привычки</string>
+    <string name="reveal_description">Раскрыть описание</string>
+    <string name="high_priority">Высокий</string>
+    <string name="normal_priority">Нормальный</string>
+    <string name="small_priority">Маленький</string>
+</resources>
