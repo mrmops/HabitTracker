@@ -1,24 +1,65 @@
 package com.example.habittracker
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.Adapters.HabitAdapter
+import com.example.habittracker.Models.Habit
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
+import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener, View.OnClickListener {
 
-    lateinit var habitRecyclerView: RecyclerView
+    companion object{
+        const val HABIT_CREATE = 0
+        const val HABIT_EDIT = 1
+        private val LOG_KEY = MainActivity::class.java.simpleName
+    }
+
+    private lateinit var habitAdapter: HabitAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        habitRecyclerView = findViewById(R.id.habit_recycler_view)
         habitRecyclerView.addItemDecoration(DividerItemDecoration(habitRecyclerView.context, DividerItemDecoration.VERTICAL))
-        val habits = ArrayList<Habit>().apply {
-            add(Habit("Учить котлин", "Учить котлин очень нужно и важно, но jvm тянет вниз", HabitType.TYPE, Priority.HIGH,"Каждый день"))
-            add(Habit("Учить котлин", "Учить котлин очень нужно и важно, но jvm тянет вниз", HabitType.TYPE, Priority.HIGH,"Каждый день"))
+        habitAdapter = HabitAdapter(ArrayList())
+        habitRecyclerView.adapter = habitAdapter
+        habitAdapter.onItemClickListener = this
+
+        fab.setOnClickListener(this)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
+        if(resultCode == RESULT_OK){
+            val habit = data?.getSerializableExtra(HabitEditActivity.HABIT_KEY) as Habit
+            when(requestCode) {
+                HABIT_CREATE -> {
+                    habitAdapter.addItem(habit)
+                }
+                HABIT_EDIT -> {
+                    habitAdapter.updateItem(habit)
+                }
+            }
         }
-        habitRecyclerView.adapter = HabitAdapter(habits)
+        else{
+            Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
+        }
+    }
+
+    override fun onItemClick(habit: Habit) {
+        val intent = HabitEditActivity.newIntent(this, habit)
+        startActivityForResult(intent, HABIT_EDIT)
+    }
+
+    override fun onClick(v: View?) {
+        val habit = Habit().apply { id = UUID.randomUUID() }
+        val intent = HabitEditActivity.newIntent(this, habit)
+        startActivityForResult(intent, HABIT_CREATE)
     }
 }

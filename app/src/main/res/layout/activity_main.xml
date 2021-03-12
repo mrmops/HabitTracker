@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/habit_recycler_view"
+        android:id="@+id/habitRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -24,8 +24,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="12dp"
         android:contentDescription="@string/add_habit"
-        app:layout_constraintBottom_toBottomOf="@+id/habit_recycler_view"
-        app:layout_constraintEnd_toEndOf="@+id/habit_recycler_view"
+        app:layout_constraintBottom_toBottomOf="@+id/habitRecyclerView"
+        app:layout_constraintEnd_toEndOf="@+id/habitRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/round_add_black_48" />
 
