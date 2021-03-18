@@ -29,12 +29,22 @@
         tools:text="Name of habit!" />
 
     <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/periodicity"
+        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
+        app:layout_constraintStart_toStartOf="@+id/habitName"
+        app:layout_constraintTop_toBottomOf="@+id/habitName" />
+
+    <TextView
         android:id="@+id/habitPeriod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
-        app:layout_constraintStart_toStartOf="@+id/habitName"
+        app:layout_constraintEnd_toStartOf="@+id/detailsButton"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/habitName"
         tools:text="Mon, The, Thu, Wen, Fri, Sat, Sun" />
 
@@ -46,8 +56,9 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <LinearLayout
+    <GridLayout
         android:id="@+id/details_layout"
+        android:useDefaultMargins="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,21 +66,34 @@
         app:layout_constraintTop_toBottomOf="@+id/habitColor">
 
         <TextView
-            android:id="@+id/habitType"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Type" />
+            android:text="@string/type" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:text="@string/priority" />
+
+        <TextView
+            android:id="@+id/habitType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="0"
+            tools:text="Хорошая/Плохая" />
 
         <TextView
             android:id="@+id/habitPriority"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Priority" />
+            android:layout_column="1"
+            android:layout_row="1"
+            tools:text="Нормальный" />
 
-    </LinearLayout>
-
+    </GridLayout>
 
     <TextView
         android:id="@+id/description"
@@ -88,6 +112,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/reveal_description" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
