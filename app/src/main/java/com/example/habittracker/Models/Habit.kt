@@ -1,5 +1,6 @@
 package com.example.habittracker.Models
 
+import com.example.habittracker.Infrastructure.HSVColor
 import java.io.Serializable
 import java.util.*
 
@@ -12,6 +13,7 @@ class Habit: Serializable{
     var priority: Priority = Priority.NORMAL
     var periodic:String = ""
     var numberRepeating: Int = 0
+    var color: HSVColor = HSVColor()
 
 
     override fun equals(other: Any?): Boolean {

@@ -3,13 +3,11 @@ package com.example.habittracker.Adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
+import kotlinx.android.synthetic.main.habit_item.view.*
 
 class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
 
@@ -46,13 +44,14 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
     }
 
     class HabitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val nameTextView: TextView = itemView.findViewById(R.id.habit_name)
-        private val descriptionTextView = itemView.findViewById<TextView>(R.id.description)
-        private val periodTextView = itemView.findViewById<TextView>(R.id.habit_period)
-        private val priorityTextView = itemView.findViewById<TextView>(R.id.habit_priority)
-        private val typeTextView = itemView.findViewById<TextView>(R.id.habit_type)
-        private val detailsButton = itemView.findViewById<ImageView>(R.id.details_button)
-        private val habitDetailsGroup = itemView.findViewById<Group>(R.id.habit_details)
+        private val nameTextView: TextView = itemView.habitName
+        private val descriptionTextView = itemView.description
+        private val periodTextView = itemView.habitPeriod
+        private val priorityTextView = itemView.habitPriority
+        private val typeTextView = itemView.habitType
+        private val detailsButton = itemView.detailsButton
+        private val habitDetailsGroup = itemView.habitDetails
+        private val habitColor = itemView.habitColor
 
         init {
             detailsButton.setOnClickListener {
@@ -74,6 +73,7 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
             val context = priorityTextView.context
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
+            habitColor.setColorFilter(habit.color.toArgbColor())
         }
     }
 }

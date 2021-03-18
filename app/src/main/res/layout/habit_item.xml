@@ -17,7 +17,7 @@
         android:src="@color/black" />
 
     <TextView
-        android:id="@+id/habit_name"
+        android:id="@+id/habitName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -29,17 +29,17 @@
         tools:text="Name of habit!" />
 
     <TextView
-        android:id="@+id/habit_period"
+        android:id="@+id/habitPeriod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
-        app:layout_constraintStart_toStartOf="@+id/habit_name"
-        app:layout_constraintTop_toBottomOf="@+id/habit_name"
+        app:layout_constraintStart_toStartOf="@+id/habitName"
+        app:layout_constraintTop_toBottomOf="@+id/habitName"
         tools:text="Mon, The, Thu, Wen, Fri, Sat, Sun" />
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/habit_details"
+        android:id="@+id/habitDetails"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:constraint_referenced_ids="description, details_layout"
@@ -55,14 +55,14 @@
         app:layout_constraintTop_toBottomOf="@+id/habitColor">
 
         <TextView
-            android:id="@+id/habit_type"
+            android:id="@+id/habitType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             tools:text="Type" />
 
         <TextView
-            android:id="@+id/habit_priority"
+            android:id="@+id/habitPriority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
         tools:text="Description" />
 
     <ImageView
-        android:id="@+id/details_button"
+        android:id="@+id/detailsButton"
         android:layout_width="40dp"
         android:layout_height="30dp"
         android:src="@drawable/round_keyboard_arrow_down_black_18"

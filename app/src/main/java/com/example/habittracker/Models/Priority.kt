@@ -10,9 +10,8 @@ enum class Priority {
     SMALL;
 
     companion object{
-        fun localizationStrings(context: Context): Map<String, Priority>{
-            val values = values()
-            return values.map { Pair(context.getString(it.toStringResourceId()), it) }.toMap()
+        fun valuesToLocalizationStrings(context: Context): Map<String, Priority>{
+            return values().map { Pair(it.toString(context), it) }.toMap()
         }
     }
 

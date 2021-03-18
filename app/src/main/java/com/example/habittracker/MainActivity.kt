@@ -36,19 +36,21 @@ class MainActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener, View
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        if(resultCode == RESULT_OK){
-            val habit = data?.getSerializableExtra(HabitEditActivity.HABIT_KEY) as Habit
-            when(requestCode) {
-                HABIT_CREATE -> {
-                    habitAdapter.addItem(habit)
-                }
-                HABIT_EDIT -> {
-                    habitAdapter.updateItem(habit)
+        when(resultCode)
+        {
+            RESULT_OK -> {
+                val habit = HabitEditActivity.fromResult(data!!)
+                when(requestCode) {
+                    HABIT_CREATE -> {
+                        habitAdapter.addItem(habit)
+                    }
+                    HABIT_EDIT -> {
+                        habitAdapter.updateItem(habit)
+                    }
                 }
             }
-        }
-        else{
-            Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
+            RESULT_CANCELED -> Log.e(LOG_KEY, "Canceled requestCode = $requestCode")
+            else -> Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
         }
     }
 

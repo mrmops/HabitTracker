@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="square_size">60dp</dimen>
+    <dimen name="stroke_width">3dp</dimen>
+    <dimen name="margin_size">20dp</dimen>
+</resources>

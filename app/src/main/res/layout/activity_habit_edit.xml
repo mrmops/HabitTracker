@@ -76,7 +76,7 @@
         android:id="@+id/prioritySpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintBottom_toTopOf="@+id/selectedColorView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/habitTypeRadioGroup"
         app:layout_constraintTop_toBottomOf="@+id/priorityLabel"
@@ -87,20 +87,72 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/color_habit"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView" />
+        app:layout_constraintBottom_toBottomOf="@+id/selectedColorView"
+
+        app:layout_constraintStart_toStartOf="@+id/habitTypeRadioGroup"
+        app:layout_constraintTop_toTopOf="@+id/selectedColorView" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/selectedColorView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:contentDescription="@string/color_habit"
         android:src="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/habitTypeRadioGroup" />
+
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:listitem="@layout/color_picker_item"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/selectedColorView"
+        tools:layout_editor_absoluteX="10dp" >
+
+        <LinearLayout
+            android:id="@+id/colorPicker"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item" />
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+            <include
+                layout="@layout/color_picker_item"/>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
 
     <TextView
         android:id="@+id/numberRepetitionsLabel"
@@ -109,7 +161,7 @@
         android:labelFor="@id/numberRepetitionsInput"
         android:text="@string/numberRepetitions"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 
     <EditText
         android:id="@+id/numberRepetitionsInput"
