@@ -15,14 +15,15 @@ import kotlin.collections.ArrayList
 class MainActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener, View.OnClickListener {
 
     companion object{
-        const val HABIT_CREATE = 0
-        const val HABIT_EDIT = 1
+        private const val HABIT_CREATE = 0
+        private const val HABIT_EDIT = 1
         private val LOG_KEY = MainActivity::class.java.simpleName
     }
 
     private lateinit var habitAdapter: HabitAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(LOG_KEY, "OnCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         habitRecyclerView.addItemDecoration(DividerItemDecoration(habitRecyclerView.context, DividerItemDecoration.VERTICAL))
@@ -55,12 +56,14 @@ class MainActivity : AppCompatActivity(), HabitAdapter.OnItemClickListener, View
     }
 
     override fun onItemClick(habit: Habit) {
+        Log.d(LOG_KEY, "Move to edit habit with id = ${habit.id}")
         val intent = HabitEditActivity.newIntent(this, habit)
         startActivityForResult(intent, HABIT_EDIT)
     }
 
     override fun onClick(v: View?) {
         val habit = Habit().apply { id = UUID.randomUUID() }
+        Log.d(LOG_KEY, "Move to create habit with id = ${habit.id}")
         val intent = HabitEditActivity.newIntent(this, habit)
         startActivityForResult(intent, HABIT_CREATE)
     }

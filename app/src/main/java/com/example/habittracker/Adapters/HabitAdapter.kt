@@ -52,6 +52,7 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
         private val detailsButton = itemView.detailsButton
         private val habitDetailsGroup = itemView.habitDetails
         private val habitColor = itemView.habitColor
+        private val repeatTextView = itemView.numberRepetitionsTextView
 
         init {
             detailsButton.setOnClickListener {
@@ -74,6 +75,7 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
             habitColor.setColorFilter(habit.color.toArgbColor())
+            repeatTextView.text = habit.numberRepeating.toString()
         }
     }
 }

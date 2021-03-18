@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Infrastructure.HSVColorGradientGenerator
+import com.example.habittracker.Infrastructure.firstOrNull
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
@@ -41,16 +42,20 @@ class HabitEditActivity : AppCompatActivity() {
     private lateinit var priorities: Map<String, Priority>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(LOG_KEY, "OnCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_habit_edit)
+        Log.d(LOG_KEY, "setContentView ended")
         val extras = intent.extras ?: throw IllegalArgumentException()
         habit = extras.getSerializable(HABIT_KEY) as Habit
         setInputsValue()
         submitButton.setOnClickListener { submitHabitData() }
         setUpGradientColorPicker()
+        Log.d(LOG_KEY, "OnCreate ended")
     }
 
     private fun setUpGradientColorPicker() {
+        Log.d(LOG_KEY, "Start set up gradient")
         colorPicker.background = HSVColorGradientGenerator
                 .generateGradient(
                         GradientDrawable.Orientation.LEFT_RIGHT,
@@ -74,6 +79,7 @@ class HabitEditActivity : AppCompatActivity() {
             }
             imageViewCounter++
         }
+        Log.d(LOG_KEY, "Stop set up gradient")
     }
 
     private fun setInputsValue() {
@@ -124,15 +130,5 @@ class HabitEditActivity : AppCompatActivity() {
             else -> throw NotImplementedError("")
         }
     }
-}
-
-private fun <K, V> Map<K, V>.firstOrNull(filter: (Pair<K,V>) -> Boolean): Pair<K,V>? {
-    for (item in this){
-        val pair = item.toPair()
-        if(filter(pair)){
-            return pair
-        }
-    }
-    return null
 }
 

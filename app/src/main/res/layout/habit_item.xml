@@ -5,12 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp">
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/habitColor"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/color_habit"
@@ -20,10 +20,10 @@
         android:id="@+id/habitName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="16dp"
         android:maxLength="35"
         android:maxLines="1"
-        android:textSize="15sp"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/habitColor"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Name of habit!" />
@@ -33,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/periodicity"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
         app:layout_constraintStart_toStartOf="@+id/habitName"
         app:layout_constraintTop_toBottomOf="@+id/habitName" />
@@ -42,8 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
+        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
-        app:layout_constraintEnd_toStartOf="@+id/detailsButton"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/habitName"
         tools:text="Mon, The, Thu, Wen, Fri, Sat, Sun" />
@@ -54,13 +55,14 @@
         android:layout_height="0dp"
         app:constraint_referenced_ids="description, details_layout"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="gone"/>
 
     <GridLayout
         android:id="@+id/details_layout"
         android:useDefaultMargins="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/habitColor">
@@ -93,6 +95,21 @@
             android:layout_row="1"
             tools:text="Нормальный" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="2"
+            android:text="@string/numberRepetitions" />
+
+        <TextView
+            android:id="@+id/numberRepetitionsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="2"
+            tools:text="2" />
+
     </GridLayout>
 
     <TextView
@@ -105,8 +122,8 @@
 
     <ImageView
         android:id="@+id/detailsButton"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/round_keyboard_arrow_down_black_18"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
         app:layout_constraintEnd_toEndOf="parent"
