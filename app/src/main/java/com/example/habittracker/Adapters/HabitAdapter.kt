@@ -39,8 +39,24 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
 
     fun updateItem(habit: Habit){
         val index = habits.indexOf(habit)
-        habits[index] = habit
-        notifyItemChanged(index)
+        if(index != -1) {
+            habits[index] = habit
+            notifyItemChanged(index)
+        }
+        else{
+            throw IllegalArgumentException("Привычки с id = ${habit.id} не был добавлен в список")
+        }
+    }
+
+    fun removeItem(habit:Habit){
+        val index = habits.indexOf(habit)
+        if(index != -1) {
+            habits.removeAt(index)
+            notifyItemRemoved(index)
+        }
+        else{
+            throw IllegalArgumentException("Привычки с id = ${habit.id} не был добавлен в список")
+        }
     }
 
     class HabitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
