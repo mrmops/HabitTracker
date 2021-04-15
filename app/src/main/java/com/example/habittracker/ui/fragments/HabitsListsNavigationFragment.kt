@@ -8,37 +8,60 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
 import com.example.habittracker.HabitEditActivity
-import com.example.habittracker.MainActivity
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
+import com.example.habittracker.ui.fragments.viewModels.SortedAndFilteredHabitsListViewModel
 import kotlinx.android.synthetic.main.fragment_habits.*
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
 
-    companion object{
+    companion object {
         private const val HABIT_CREATE = 0
         private const val HABIT_EDIT = 1
-        private val LOG_KEY = HabitsListsNavigationFragment::class.java.simpleName
+        private val LOG_KEY = HabitsListsNavigationFragment::class.java.name
     }
 
-    private val habits:ArrayList<Habit> = ArrayList<Habit>()
+    private lateinit var viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel;
     private lateinit var habitTypedListsFragmentsAdapter: HabitTypedListsFragmentsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModelSortedAndFilteredHabits = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return SortedAndFilteredHabitsListViewModel() as T
+            }
+        }).get(SortedAndFilteredHabitsListViewModel::class.java)
+    }
 
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_habits, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        habitTypedListsFragmentsAdapter = HabitTypedListsFragmentsAdapter(habits, requireContext(), childFragmentManager)
+        val bottomFragment = ListSortsAndOrdersDialogFragment()
+        childFragmentManager.beginTransaction()
+            .replace(R.id.containerBottomSheet, bottomFragment)
+            .commit()
+
+        habitTypedListsFragmentsAdapter = HabitTypedListsFragmentsAdapter(
+            viewModelSortedAndFilteredHabits,
+            this,
+            requireContext(),
+            habitsViewPager,
+            childFragmentManager
+        )
         habitsViewPager.adapter = habitTypedListsFragmentsAdapter
         habitsPagerTabLayout.setupWithViewPager(habitsViewPager)
 
@@ -59,21 +82,24 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        when(resultCode)
-        {
+        when (resultCode) {
             AppCompatActivity.RESULT_OK -> {
                 val habit = HabitEditActivity.fromResult(data!!)
-                when(requestCode) {
+                when (requestCode) {
                     HABIT_CREATE -> {
-                        habitTypedListsFragmentsAdapter.addItem(habit)
+                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
                     }
                     HABIT_EDIT -> {
-                        habitTypedListsFragmentsAdapter.updateItem(habit)
+                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
                     }
                 }
             }
-            AppCompatActivity.RESULT_CANCELED -> Log.e(LOG_KEY, "Canceled requestCode = $requestCode")
             else -> Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(LOG_KEY, "On destroy")
     }
 }

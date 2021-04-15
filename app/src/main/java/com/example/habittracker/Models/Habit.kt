@@ -2,11 +2,13 @@ package com.example.habittracker.Models
 
 import com.example.habittracker.Infrastructure.HSVColor
 import java.io.Serializable
+import java.time.LocalDate
 import java.util.*
 
 class Habit: Serializable{
 
     lateinit var id:UUID
+    lateinit var dateOfUpdate:Date
     var name:String = ""
     var description:String = ""
     var type: HabitType = HabitType.GOOD

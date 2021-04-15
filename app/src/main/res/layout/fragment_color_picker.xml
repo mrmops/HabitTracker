@@ -3,32 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.ColorPicker"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    tools:context=".ui.fragments.ColorPicker">
 
     <ImageView
         android:id="@+id/selectedColorView"
         android:layout_width="@dimen/square_size"
         android:layout_height="@dimen/square_size"
+        android:layout_gravity="center"
         android:contentDescription="@string/color_habit"
-        android:src="@color/black"
-        android:layout_gravity="center"/>
+        android:src="@color/black" />
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        tools:listitem="@layout/color_picker_item"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="10dp" >
+        tools:layout_editor_absoluteX="10dp"
+        tools:listitem="@layout/color_picker_item">
 
         <LinearLayout
             android:id="@+id/colorPicker"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         </LinearLayout>
 
@@ -38,7 +38,7 @@
         android:id="@+id/submitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:text="@string/submit" />
 
 </LinearLayout>

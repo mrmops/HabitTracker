@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habit_item.view.*
+import java.text.SimpleDateFormat
 
-class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
+class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
 
     var onItemClickListener: OnItemClickListener? = null
 
@@ -32,37 +33,16 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
         return habits.size
     }
 
-    fun addItem(habit: Habit){
-        habits.add(habit)
-        notifyItemInserted(habits.size - 1)
-    }
-
-    fun updateItem(habit: Habit){
-        val index = habits.indexOf(habit)
-        if(index != -1) {
-            habits[index] = habit
-            notifyItemChanged(index)
-        }
-        else{
-            throw IllegalArgumentException("Привычки с id = ${habit.id} не был добавлен в список")
-        }
-    }
-
-    fun removeItem(habit:Habit){
-        val index = habits.indexOf(habit)
-        if(index != -1) {
-            habits.removeAt(index)
-            notifyItemRemoved(index)
-        }
-        else{
-            throw IllegalArgumentException("Привычки с id = ${habit.id} не был добавлен в список")
-        }
+    fun updateItems(habits: List<Habit>){
+        this.habits = ArrayList(habits)
+        notifyDataSetChanged()
     }
 
     class HabitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.habitName
         private val descriptionTextView = itemView.description
-        private val periodTextView = itemView.habitPeriod
+//        private val periodTextView = itemView.habitPeriod
+        private val dateOfUpdateTextView = itemView.habitDateOfUpdate
         private val priorityTextView = itemView.habitPriority
         private val typeTextView = itemView.habitType
         private val detailsButton = itemView.detailsButton
@@ -86,7 +66,8 @@ class HabitAdapter(private val habits: ArrayList<Habit>): RecyclerView.Adapter<H
         fun bind(habit: Habit){
             nameTextView.text = habit.name
             descriptionTextView.text = habit.description
-            periodTextView.text = habit.periodic
+            val dateFormat = SimpleDateFormat("HH:mm dd-MM-yyyy")
+            dateOfUpdateTextView.text = dateFormat.format(habit.dateOfUpdate)
             val context = priorityTextView.context
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
