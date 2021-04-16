@@ -1,44 +1,36 @@
 package com.example.habittracker
 
+import android.R.attr.fragment
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.children
-import com.example.habittracker.Infrastructure.HSVColor
-import com.example.habittracker.Infrastructure.HSVColorGradientGenerator
-import com.example.habittracker.Infrastructure.firstOrNull
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Models.Habit
-import com.example.habittracker.Models.HabitType
-import com.example.habittracker.Models.Priority
-import com.example.habittracker.ui.fragments.ColorPicker
 import com.example.habittracker.ui.fragments.EditHabitFragment
+import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.activity_habit_edit.*
 
+
 class HabitEditActivity : AppCompatActivity(), EditHabitFragment.IResultCallBack {
-    companion object{
+    companion object {
         private val LOG_KEY = HabitEditActivity::class.simpleName
         private const val HABIT_KEY = "Habit Key!"
         private const val FRAGMENT_TAG = "Habit Key!"
 
-        fun newIntent(context: Context, habit: Habit): Intent{
+        fun newIntent(context: Context, habit: Habit): Intent {
             return Intent(context, HabitEditActivity::class.java).apply {
                 putExtra(HABIT_KEY, habit)
             }
         }
 
-        fun fromResult(data:Intent): Habit{
+        fun fromResult(data: Intent): Habit {
             return data.getSerializableExtra(HABIT_KEY) as Habit
         }
     }
-
-    private lateinit var habit: Habit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(LOG_KEY, "OnCreate")
@@ -48,11 +40,19 @@ class HabitEditActivity : AppCompatActivity(), EditHabitFragment.IResultCallBack
 
         val extras = intent.extras
             ?: throw IllegalArgumentException("Активити была запущена не через интент метода newIntent!")
-        habit = extras.getSerializable(HABIT_KEY) as Habit
+        val habit = extras.getSerializable(HABIT_KEY) as Habit
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, EditHabitFragment.newInstance(habit), FRAGMENT_TAG)
-            .commit()
+        val viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return HabitViewModel(habit) as T
+            }
+        }).get(HabitViewModel::class.java)
+
+        val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
+        if (fragment == null)
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, EditHabitFragment.newInstance(), FRAGMENT_TAG)
+                .commit()
         Log.d(LOG_KEY, "OnCreate ended")
     }
 

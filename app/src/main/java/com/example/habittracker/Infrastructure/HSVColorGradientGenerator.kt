@@ -1,6 +1,5 @@
 package com.example.habittracker.Infrastructure
 
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 
 class HSVColorGradientGenerator {

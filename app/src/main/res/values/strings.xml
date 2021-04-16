@@ -31,4 +31,8 @@
     <string name="good_habits">Хорошие привычки</string>
     <string name="bad_habits">Плохие привычки</string>
     <string name="submit">Подтвердить</string>
+    <string name="filter_and_sorts">Фильтры и сортировки</string>
+    <string name="sort_by_date">Сортировать по дате редактирования</string>
+    <string name="sort_up_by_date">Сортировать вверх по дате</string>
+    <string name="filtration">Фильтрация</string>
 </resources>

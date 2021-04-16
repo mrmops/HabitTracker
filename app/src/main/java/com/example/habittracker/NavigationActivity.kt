@@ -3,15 +3,11 @@ package com.example.habittracker
 import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.findFragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.ui.fragments.HabitsListsNavigationFragment
-import com.example.habittracker.ui.fragments.ListHabitFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 

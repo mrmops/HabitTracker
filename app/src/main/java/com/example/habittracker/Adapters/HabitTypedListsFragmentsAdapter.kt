@@ -1,97 +1,83 @@
 package com.example.habittracker.Adapters
 
 import android.content.Context
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.LifecycleOwner
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.ListHabitFragment
+import com.example.habittracker.ui.fragments.viewModels.SortedAndFilteredHabitsListViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class HabitTypedListsFragmentsAdapter(
-        habits: ArrayList<Habit>,
-        private val context: Context,
-        childFragmentManager: FragmentManager
+    viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel,
+    lifeCycle: LifecycleOwner,
+    private val context: Context,
+    private val viewGroup: ViewGroup,
+    childFragmentManager: FragmentManager
 ) : FragmentPagerAdapter(childFragmentManager) {
 
-    private var goodHabits:ArrayList<Habit> = ArrayList()
-    private var badHabits:ArrayList<Habit> =  ArrayList()
-    private var habits: HashMap<UUID, Habit> = HashMap()
-    private var badHabitsFragment:ListHabitFragment
-    private var goodHabitsFragment:ListHabitFragment
+    companion object{
+        private const val GOOD_FRAGMENT_POSITION = 0
+        private const val BAD_FRAGMENT_POSITION = 1
+    }
+
+    private var goodHabits: ArrayList<Habit> = ArrayList()
+    private var badHabits: ArrayList<Habit> = ArrayList()
+    private var habitsIdMap: HashMap<UUID, Habit> = HashMap()
 
     init {
-        for (habit in habits){
-            when(habit.type){
+        val habits = viewModelSortedAndFilteredHabits.listHabits.value
+        if (habits != null)
+            filterHabitsByType(habits)
+
+        viewModelSortedAndFilteredHabits.listHabits.observe(lifeCycle, { list ->
+            goodHabits = ArrayList()
+            badHabits = ArrayList()
+            filterHabitsByType(list)
+            updateHabitsInFragments()
+        })
+    }
+
+    private fun filterHabitsByType(habits: List<Habit>) {
+        for (habit in habits) {
+            when (habit.type) {
                 HabitType.GOOD -> goodHabits.add(habit)
                 HabitType.BAD -> badHabits.add(habit)
             }
-            this.habits[habit.id] = habit
+            this.habitsIdMap[habit.id] = habit
         }
-
-        badHabitsFragment= ListHabitFragment.newInstance(badHabits)
-        goodHabitsFragment= ListHabitFragment.newInstance(goodHabits)
     }
+
+    private fun updateHabitsInFragments() {
+        val badHabitsFragment = getBadInstancedFragment()
+        badHabitsFragment.updateHabits(badHabits)
+        val goodHabitsFragment = getGoodInstancedFragment()
+        goodHabitsFragment.updateHabits(goodHabits)
+    }
+
+    private fun getBadInstancedFragment(): ListHabitFragment =
+        instantiateItem(viewGroup, BAD_FRAGMENT_POSITION) as ListHabitFragment
+
+    private fun getGoodInstancedFragment(): ListHabitFragment =
+        instantiateItem(viewGroup, GOOD_FRAGMENT_POSITION) as ListHabitFragment
 
     override fun getCount(): Int = 2
 
-    override fun getItem(position: Int): Fragment = when(position){
-        0 -> goodHabitsFragment
-        else -> badHabitsFragment
-    }
+    override fun getItem(position: Int): Fragment =
+        when (position) {
+            GOOD_FRAGMENT_POSITION -> ListHabitFragment.newInstance(goodHabits)
+            else -> ListHabitFragment.newInstance(badHabits)
+        }
 
-    override fun getPageTitle(position: Int): CharSequence? = when(position){
-        0 -> context.getString(R.string.good_habits)
+    override fun getPageTitle(position: Int): CharSequence? = when (position) {
+        GOOD_FRAGMENT_POSITION -> context.getString(R.string.good_habits)
         else -> context.getString(R.string.bad_habits)
-    }
-
-    fun addItem(habit: Habit) {
-        when(habit.type){
-            HabitType.GOOD ->{
-                goodHabitsFragment.addHabit(habit)
-            }
-            HabitType.BAD ->{
-                badHabitsFragment.addHabit(habit)
-            }
-        }
-        habits[habit.id] = habit
-    }
-
-    fun updateItem(habit: Habit) {
-        val typeWasChanged = habits[habit.id]!!.type != habit.type
-
-        when(habit.type){
-            HabitType.GOOD -> {
-                if (typeWasChanged) {
-                    goodHabitsFragment.addHabit(habit)
-                    badHabitsFragment.removeHabit(habit)
-                } else {
-                    goodHabitsFragment.updateHabit(habit)
-                }
-            }
-            HabitType.BAD ->{
-                if (typeWasChanged) {
-                    badHabitsFragment.addHabit(habit)
-                    goodHabitsFragment.removeHabit(habit)
-                } else {
-                    badHabitsFragment.updateHabit(habit)
-                }
-            }
-        }
-        habits[habit.id] = habit
-    }
-
-    fun habitAddOrUpdate(habit: Habit) {
-        if(habits.containsKey(habit.id)){
-            updateItem(habit)
-        }
-        else{
-            addItem(habit)
-        }
-        habits[habit.id] = habit
     }
 }

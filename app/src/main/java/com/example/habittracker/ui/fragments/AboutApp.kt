@@ -14,7 +14,6 @@ class AboutApp : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_about_app, container, false)
-        return root
+        return inflater.inflate(R.layout.fragment_about_app, container, false)
     }
 }

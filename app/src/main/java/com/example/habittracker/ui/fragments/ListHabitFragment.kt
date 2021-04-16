@@ -2,6 +2,7 @@ package com.example.habittracker.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
 
     companion object {
         private const val HABITS_KEY = "Good habits key"
+        private val LOG_KEY = ListHabitFragment::class.java.simpleName
 
         fun newInstance(goodHabits:ArrayList<Habit>): ListHabitFragment {
             val fragment = ListHabitFragment()
@@ -26,7 +28,7 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         }
     }
 
-    private lateinit var habitAdapter: HabitAdapter
+    private var habitAdapter: HabitAdapter? = null
     private lateinit var habits:ArrayList<Habit>
     private var callBack: IHabitItemClick? = null
 
@@ -50,12 +52,7 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         habitsRecyclerView.addItemDecoration(DividerItemDecoration(habitsRecyclerView.context, DividerItemDecoration.VERTICAL))
         habitAdapter = HabitAdapter(habits)
         habitsRecyclerView.adapter = habitAdapter
-        habitAdapter.onItemClickListener = this
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-
+        habitAdapter?.onItemClickListener = this
     }
 
     override fun onAttach(context: Context) {
@@ -69,7 +66,7 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
             callBack = parentFragment as IHabitItemClick
         }
         catch (e: Exception){
-            throw IllegalArgumentException("Activity ${parentFragment!!::class.simpleName} не реализует интерфейс интерфейс ${IHabitItemClick::class.qualifiedName}")
+            throw IllegalArgumentException("Activity ${parentFragment::class.simpleName} не реализует интерфейс интерфейс ${IHabitItemClick::class.qualifiedName}")
         }
     }
 
@@ -78,28 +75,21 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         callBack = null
     }
 
-    fun addHabit(habit: Habit) {
-        habitAdapter.addItem(habit)
-    }
-
-    fun updateHabit(habit: Habit) {
-        habitAdapter.updateItem(habit)
-    }
-
-    fun removeHabit(habit:Habit){
-        habitAdapter.removeItem(habit)
-    }
+    fun updateHabits(habits: List<Habit>) = habitAdapter?.updateItems(habits)
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putSerializable(HABITS_KEY, habits)
     }
 
-    override fun onItemClick(habit: Habit) {
-        callBack?.onHabitItemClick(habit)
-    }
+    override fun onItemClick(habit: Habit) = callBack?.onHabitItemClick(habit) ?: Unit
 
     interface IHabitItemClick {
         fun onHabitItemClick(habit: Habit)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(LOG_KEY, "On destroy")
     }
 }
