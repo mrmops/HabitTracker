@@ -38,7 +38,7 @@ class ColorPicker : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        habitViewModel = ViewModelProvider(requireActivity()).get(HabitViewModel::class.java)
+        habitViewModel = ViewModelProvider(requireParentFragment()).get(HabitViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -72,7 +72,6 @@ class ColorPicker : DialogFragment() {
 
         submitButton.setOnClickListener {
             habitViewModel.updateColor(selectedColor)
-            habitViewModel.submit()
             dismiss()
         }
     }

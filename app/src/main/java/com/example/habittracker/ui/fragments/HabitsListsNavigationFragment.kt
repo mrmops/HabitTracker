@@ -1,5 +1,6 @@
 package com.example.habittracker.ui.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -29,6 +30,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
     private lateinit var viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel;
     private lateinit var habitTypedListsFragmentsAdapter: HabitTypedListsFragmentsAdapter
+    private var habitClickCallBack: ClickHabitItemCallBack? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,19 +67,10 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         habitsViewPager.adapter = habitTypedListsFragmentsAdapter
         habitsPagerTabLayout.setupWithViewPager(habitsViewPager)
 
-        fab.setOnClickListener {
-            val habit = Habit().apply { id = UUID.randomUUID() }
-            Log.d(LOG_KEY, "Move to create habit with id = ${habit.id}")
-            val intent = HabitEditActivity.newIntent(requireContext(), habit)
-            startActivityForResult(intent, HABIT_CREATE)
-        }
+        fab.setOnClickListener { habitClickCallBack?.onNewHabitButtonClick() }
     }
 
-    override fun onHabitItemClick(habit: Habit) {
-        Log.d(LOG_KEY, "Move to edit habit with id = ${habit.id}")
-        val intent = HabitEditActivity.newIntent(requireContext(), habit)
-        startActivityForResult(intent, HABIT_EDIT)
-    }
+    override fun onHabitItemClick(habit: Habit) = habitClickCallBack?.onHabitClick(habit) ?: Unit
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -98,8 +91,33 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        habitClickCallBack = if(context is ClickHabitItemCallBack){
+            context
+        }
+        else
+            throw IllegalArgumentException("Активити не реализует интерфейс callBack ${ClickHabitItemCallBack::class.java.name}")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        habitClickCallBack = null
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d(LOG_KEY, "On destroy")
+    }
+
+    fun addOrUpdateHabit(habit: Habit) {
+        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
+    }
+
+    interface ClickHabitItemCallBack{
+
+        fun onHabitClick(habit: Habit)
+
+        fun onNewHabitButtonClick()
     }
 }

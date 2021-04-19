@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.habittracker.Infrastructure.firstOrNull
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
@@ -32,10 +34,15 @@ class EditHabitFragment : Fragment() {
     private lateinit var habitViewModel: HabitViewModel
     private lateinit var priorities: Map<String, Priority>
     private var callBack: IResultCallBack? = null
+    val args : EditHabitFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        habitViewModel = ViewModelProvider(requireActivity()).get(HabitViewModel::class.java)
+        habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return HabitViewModel(args.habit) as T
+            }
+        }).get(HabitViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -46,11 +53,14 @@ class EditHabitFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        habitViewModel.habitUpdate.observe(viewLifecycleOwner, { habit -> setInputsValue(habit)})
+        habitViewModel.colorUpdate.observe(viewLifecycleOwner, { color -> selectedColorView.setColorFilter(color.toArgbColor())})
+        val habit = habitViewModel.habitUpdate.value
+        if(habit != null)
+            setInputsValue(habit)
         submitButton.setOnClickListener { submitHabitData() }
         selectedColorView.setOnClickListener {
             val newInstance = ColorPicker.newInstance(16)
-            newInstance.show(parentFragmentManager, COLOR_PICKER_KEY)
+            newInstance.show(childFragmentManager, COLOR_PICKER_KEY)
         }
     }
 
@@ -88,8 +98,10 @@ class EditHabitFragment : Fragment() {
         Log.i(LOG_KEY, "Submit Habit data")
         setHabitValues()
         val habit = habitViewModel.habitUpdate.value
-        if(habit != null)
-            callBack?.setResult(habit)
+        if(habit != null) {
+            callBack?.onHabitEdited(habit)
+            callBack?.onFinishEditFragment()
+        }
     }
 
     private fun setHabitValues() {
@@ -101,6 +113,7 @@ class EditHabitFragment : Fragment() {
         habitViewModel.updatePriority(priorities[selectedItem]!!)
         habitViewModel.updateNumberRepeating(numberRepetitionsInput.text.toString().toInt())
         habitViewModel.updateDateOfUpdate(Date())
+        habitViewModel.submit()
     }
 
     private fun getHabitTypeFromRadioId(checkedRadioButtonId: Int): HabitType {
@@ -121,7 +134,7 @@ class EditHabitFragment : Fragment() {
         try {
             callBack = context as IResultCallBack
         } catch (e: Exception) {
-            throw IllegalArgumentException("Активити ${context::class.qualifiedName} не реадизует интерфейс ${IResultCallBack::class.qualifiedName}")
+            throw IllegalArgumentException("Активити ${context::class.qualifiedName} не реализует интерфейс ${IResultCallBack::class.qualifiedName}")
         }
     }
 
@@ -131,6 +144,7 @@ class EditHabitFragment : Fragment() {
     }
 
     interface IResultCallBack {
-        fun setResult(habit: Habit)
+        fun onHabitEdited(habit: Habit)
+        fun onFinishEditFragment()
     }
 }

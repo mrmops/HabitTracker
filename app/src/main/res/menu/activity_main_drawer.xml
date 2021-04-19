@@ -13,4 +13,5 @@
             android:icon="@drawable/abc_vector_test"
             android:title="@string/about_app" />
     </group>
+
 </menu>
