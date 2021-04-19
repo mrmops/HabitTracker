@@ -16,8 +16,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class HabitTypedListsFragmentsAdapter(
-    viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel,
-    lifeCycle: LifecycleOwner,
+    habits: List<Habit>?,
     private val context: Context,
     private val viewGroup: ViewGroup,
     childFragmentManager: FragmentManager
@@ -33,16 +32,15 @@ class HabitTypedListsFragmentsAdapter(
     private var habitsIdMap: HashMap<UUID, Habit> = HashMap()
 
     init {
-        val habits = viewModelSortedAndFilteredHabits.listHabits.value
         if (habits != null)
             filterHabitsByType(habits)
+    }
 
-        viewModelSortedAndFilteredHabits.listHabits.observe(lifeCycle, { list ->
-            goodHabits = ArrayList()
-            badHabits = ArrayList()
-            filterHabitsByType(list)
-            updateHabitsInFragments()
-        })
+    fun updateHabits(habits: List<Habit>){
+        goodHabits = ArrayList()
+        badHabits = ArrayList()
+        filterHabitsByType(habits)
+        updateHabitsInFragments()
     }
 
     private fun filterHabitsByType(habits: List<Habit>) {

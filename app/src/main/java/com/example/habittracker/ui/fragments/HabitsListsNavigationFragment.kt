@@ -35,11 +35,12 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModelSortedAndFilteredHabits = ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory{
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SortedAndFilteredHabitsListViewModel() as T
-            }
-        }).get(SortedAndFilteredHabitsListViewModel::class.java)
+        viewModelSortedAndFilteredHabits =
+            ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    return SortedAndFilteredHabitsListViewModel() as T
+                }
+            }).get(SortedAndFilteredHabitsListViewModel::class.java)
     }
 
 
@@ -58,8 +59,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
             .commit()
 
         habitTypedListsFragmentsAdapter = HabitTypedListsFragmentsAdapter(
-            viewModelSortedAndFilteredHabits,
-            this,
+            viewModelSortedAndFilteredHabits.listHabits.value,
             requireContext(),
             habitsViewPager,
             childFragmentManager
@@ -68,6 +68,8 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         habitsPagerTabLayout.setupWithViewPager(habitsViewPager)
 
         fab.setOnClickListener { habitClickCallBack?.onNewHabitButtonClick() }
+        viewModelSortedAndFilteredHabits.listHabits.observe(viewLifecycleOwner,
+            { habits -> habitTypedListsFragmentsAdapter.updateHabits(habits) })
     }
 
     override fun onHabitItemClick(habit: Habit) = habitClickCallBack?.onHabitClick(habit) ?: Unit
@@ -93,10 +95,9 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        habitClickCallBack = if(context is ClickHabitItemCallBack){
+        habitClickCallBack = if (context is ClickHabitItemCallBack) {
             context
-        }
-        else
+        } else
             throw IllegalArgumentException("Активити не реализует интерфейс callBack ${ClickHabitItemCallBack::class.java.name}")
     }
 
@@ -114,7 +115,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
     }
 
-    interface ClickHabitItemCallBack{
+    interface ClickHabitItemCallBack {
 
         fun onHabitClick(habit: Habit)
 
