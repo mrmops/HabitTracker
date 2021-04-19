@@ -15,7 +15,7 @@ import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.activity_habit_edit.*
 
 
-class HabitEditActivity : AppCompatActivity(), EditHabitFragment.IResultCallBack {
+class HabitEditActivity : AppCompatActivity() {
     companion object {
         private val LOG_KEY = HabitEditActivity::class.simpleName
         private const val HABIT_KEY = "Habit Key!"
@@ -56,7 +56,7 @@ class HabitEditActivity : AppCompatActivity(), EditHabitFragment.IResultCallBack
         Log.d(LOG_KEY, "OnCreate ended")
     }
 
-    override fun setResult(habit: Habit) {
+    fun onHabitEdited(habit: Habit) {
         setResult(RESULT_OK, Intent().apply { putExtra(HABIT_KEY, habit) })
         finish()
     }
