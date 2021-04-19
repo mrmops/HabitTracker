@@ -13,7 +13,14 @@ class HabitViewModel(private val habit: Habit) : ViewModel() {
 
     private val mutableHabitUpdate: MutableLiveData<Habit> = MutableLiveData()
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
+    private var name: String? = null
     private var color: HSVColor? = null
+    private var description: String? = null
+    private var periodic: String? = null
+    private var type: HabitType? = null
+    private var priority: Priority? = null
+    private var numberRepeating: Int? = null
+    private var dateOfUpdate: Date? = null
 
     val habitUpdate: LiveData<Habit> = mutableHabitUpdate
     val colorUpdate: LiveData<HSVColor> = mutableColorUpdate
@@ -23,33 +30,47 @@ class HabitViewModel(private val habit: Habit) : ViewModel() {
     }
 
     fun submit() {
+        if(name != null)
+            habit.name = name!!
         if(color != null)
             habit.color = color!!
+        if(description != null)
+            habit.description = description!!
+        if(periodic != null)
+            habit.periodic = periodic!!
+        if(type != null)
+            habit.type = type!!
+        if(priority != null)
+            habit.priority = priority!!
+        if(numberRepeating != null)
+            habit.numberRepeating = numberRepeating!!
+        if(dateOfUpdate != null)
+            habit.dateOfUpdate = dateOfUpdate!!
         mutableHabitUpdate.postValue(habit)
     }
 
     fun updateName(name: String) {
-        habit.name = name
+        this.name = name
     }
 
     fun updateDescription(description: String) {
-        habit.description = description
+        this.description = description
     }
 
     fun updatePeriodic(periodic: String) {
-        habit.periodic = periodic
+        this.periodic = periodic
     }
 
     fun updateHabitType(type: HabitType) {
-        habit.type = type
+        this.type = type
     }
 
     fun updatePriority(priority: Priority) {
-        habit.priority = priority
+        this.priority = priority
     }
 
     fun updateNumberRepeating(numberRepeating: Int) {
-        habit.numberRepeating = numberRepeating
+        this.numberRepeating = numberRepeating
     }
 
     fun updateColor(color: HSVColor) {
@@ -58,6 +79,6 @@ class HabitViewModel(private val habit: Habit) : ViewModel() {
     }
 
     fun updateDateOfUpdate(date: Date) {
-        habit.dateOfUpdate = date
+        this.dateOfUpdate = date
     }
 }
