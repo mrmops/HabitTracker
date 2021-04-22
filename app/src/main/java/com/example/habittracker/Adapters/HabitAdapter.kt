@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habit_item.view.*
@@ -71,7 +72,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<H
             val context = priorityTextView.context
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
-            habitColor.setColorFilter(habit.color.toArgbColor())
+            habitColor.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
             repeatTextView.text = habit.numberRepeating.toString()
         }
     }

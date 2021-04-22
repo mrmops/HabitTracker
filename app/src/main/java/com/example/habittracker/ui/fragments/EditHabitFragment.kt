@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.example.habittracker.DataBase.HabitsDataBase
+import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Infrastructure.firstOrNull
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
@@ -34,13 +36,16 @@ class EditHabitFragment : Fragment() {
     private lateinit var habitViewModel: HabitViewModel
     private lateinit var priorities: Map<String, Priority>
     private var callBack: IResultCallBack? = null
-    val args : EditHabitFragmentArgs by navArgs()
+    val args: EditHabitFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory{
+
+        val dao = HabitsDataBase.getInstance(requireContext()).habitDao()
+
+        habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(args.habit) as T
+                return HabitViewModel(args.habit, dao) as T
             }
         }).get(HabitViewModel::class.java)
     }
@@ -53,9 +58,11 @@ class EditHabitFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        habitViewModel.colorUpdate.observe(viewLifecycleOwner, { color -> selectedColorView.setColorFilter(color.toArgbColor())})
+        habitViewModel.colorUpdate.observe(
+            viewLifecycleOwner,
+            { color -> selectedColorView.setColorFilter(color.toArgbColor()) })
         val habit = habitViewModel.habitUpdate.value
-        if(habit != null)
+        if (habit != null)
             setInputsValue(habit)
         submitButton.setOnClickListener { submitHabitData() }
         selectedColorView.setOnClickListener {
@@ -71,7 +78,7 @@ class EditHabitFragment : Fragment() {
         periodicityInput.setText(habit.periodic)
         numberRepetitionsInput.setText(habit.numberRepeating.toString())
         habitTypeRadioGroup.check(getRadioButtonIdFromHabitType(habit.type))
-        selectedColorView.setColorFilter(habit.color.toArgbColor())
+        selectedColorView.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
     }
 
 
@@ -98,10 +105,9 @@ class EditHabitFragment : Fragment() {
         Log.i(LOG_KEY, "Submit Habit data")
         setHabitValues()
         val habit = habitViewModel.habitUpdate.value
-        if(habit != null) {
-            callBack?.onHabitEdited(habit)
+        if (habit != null)
             callBack?.onFinishEditFragment()
-        }
+
     }
 
     private fun setHabitValues() {
@@ -113,7 +119,7 @@ class EditHabitFragment : Fragment() {
         habitViewModel.updatePriority(priorities[selectedItem]!!)
         habitViewModel.updateNumberRepeating(numberRepetitionsInput.text.toString().toInt())
         habitViewModel.updateDateOfUpdate(Date())
-        habitViewModel.submit()
+        habitViewModel.submitAndSaveToDb()
     }
 
     private fun getHabitTypeFromRadioId(checkedRadioButtonId: Int): HabitType {
@@ -144,7 +150,6 @@ class EditHabitFragment : Fragment() {
     }
 
     interface IResultCallBack {
-        fun onHabitEdited(habit: Habit)
         fun onFinishEditFragment()
     }
 }

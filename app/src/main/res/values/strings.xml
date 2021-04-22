@@ -5,7 +5,7 @@
     <string name="reveal_description">Раскрыть описание</string>
     <string name="high_priority">Высокий</string>
     <string name="normal_priority">Нормальный</string>
-    <string name="small_priority">Маленький</string>
+    <string name="small_priority">Низкий</string>
     <string name="bad_habit_type">Плохая</string>
     <string name="good_habit_type">Хорошая</string>
     <string name="habit_name_label">Имя привычки</string>

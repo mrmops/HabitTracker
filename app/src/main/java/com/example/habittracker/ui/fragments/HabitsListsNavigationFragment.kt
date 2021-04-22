@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
+import com.example.habittracker.DataBase.HabitsDataBase
 import com.example.habittracker.HabitEditActivity
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
@@ -35,10 +36,12 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dataBase = HabitsDataBase.getInstance(requireContext())
+
         viewModelSortedAndFilteredHabits =
             ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return SortedAndFilteredHabitsListViewModel() as T
+                    return SortedAndFilteredHabitsListViewModel(dataBase) as T
                 }
             }).get(SortedAndFilteredHabitsListViewModel::class.java)
     }

@@ -13,6 +13,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.habittracker.DataBase.HabitsDataBase
+import com.example.habittracker.DataBase.HabitsDataBase_Impl
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.ui.fragments.EditHabitFragment
 import com.example.habittracker.ui.fragments.EditHabitFragmentDirections
@@ -27,11 +31,10 @@ import java.util.*
 class NavigationActivity : AppCompatActivity(),
     HabitsListsNavigationFragment.ClickHabitItemCallBack, EditHabitFragment.IResultCallBack {
 
-    companion object{
+    companion object {
         private val LOG_KEY = NavigationActivity::class.java.simpleName
     }
 
-    private lateinit var viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
@@ -39,12 +42,6 @@ class NavigationActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
         setSupportActionBar(toolbar)
-
-        viewModelSortedAndFilteredHabits = ViewModelProvider(this, object : ViewModelProvider.Factory{
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return SortedAndFilteredHabitsListViewModel() as T
-            }
-        }).get(SortedAndFilteredHabitsListViewModel::class.java)
 
         navController = findNavController(R.id.nav_host_fragment)
 
@@ -60,13 +57,14 @@ class NavigationActivity : AppCompatActivity(),
     }
 
     override fun onNewHabitButtonClick() {
-        val habit = Habit().apply { id = UUID.randomUUID() }
+        val habit = Habit()
         Log.d(LOG_KEY, "Move to create habit with id = ${habit.id}")
         directEditHabitFragment(habit)
     }
 
-    private fun directEditHabitFragment(habit: Habit){
-        val direction = HabitsListsNavigationFragmentDirections.actionNavHabitsToEditHabitFragment(habit)
+    private fun directEditHabitFragment(habit: Habit) {
+        val direction =
+            HabitsListsNavigationFragmentDirections.actionNavHabitsToEditHabitFragment(habit)
         navController.navigate(direction)
     }
 
@@ -80,12 +78,5 @@ class NavigationActivity : AppCompatActivity(),
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    override fun onHabitEdited(habit: Habit) {
-        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
-    }
-
-    override fun onFinishEditFragment() {
-        val direction = EditHabitFragmentDirections.actionEditHabitFragmentToNavHabits()
-        navController.popBackStack()
-    }
+    override fun onFinishEditFragment() { navController.popBackStack() }
 }

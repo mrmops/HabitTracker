@@ -29,7 +29,6 @@ class HabitTypedListsFragmentsAdapter(
 
     private var goodHabits: ArrayList<Habit> = ArrayList()
     private var badHabits: ArrayList<Habit> = ArrayList()
-    private var habitsIdMap: HashMap<UUID, Habit> = HashMap()
 
     init {
         if (habits != null)
@@ -49,7 +48,6 @@ class HabitTypedListsFragmentsAdapter(
                 HabitType.GOOD -> goodHabits.add(habit)
                 HabitType.BAD -> badHabits.add(habit)
             }
-            this.habitsIdMap[habit.id] = habit
         }
     }
 

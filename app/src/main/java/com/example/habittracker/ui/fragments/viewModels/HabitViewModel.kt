@@ -3,13 +3,14 @@ package com.example.habittracker.ui.fragments.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.habittracker.DataBase.HabitDao
 import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
 import java.util.*
 
-class HabitViewModel(private val habit: Habit) : ViewModel() {
+class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel() {
 
     private val mutableHabitUpdate: MutableLiveData<Habit> = MutableLiveData()
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
@@ -47,6 +48,15 @@ class HabitViewModel(private val habit: Habit) : ViewModel() {
         if(dateOfUpdate != null)
             habit.dateOfUpdate = dateOfUpdate!!
         mutableHabitUpdate.postValue(habit)
+    }
+
+    fun saveToDb(){
+        habitDao.insertHabit(habit)
+    }
+
+    fun submitAndSaveToDb(){
+        submit()
+        saveToDb()
     }
 
     fun updateName(name: String) {

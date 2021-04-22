@@ -42,12 +42,6 @@ class HabitEditActivity : AppCompatActivity() {
             ?: throw IllegalArgumentException("Активити была запущена не через интент метода newIntent!")
         val habit = extras.getSerializable(HABIT_KEY) as Habit
 
-        val viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(habit) as T
-            }
-        }).get(HabitViewModel::class.java)
-
         val fragment = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (fragment == null)
             supportFragmentManager.beginTransaction()
