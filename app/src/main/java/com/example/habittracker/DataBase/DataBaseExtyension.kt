@@ -6,11 +6,11 @@ import com.example.habittracker.Models.Habit
 fun HabitDao.filterAndSortHabitsByDate(filter: String?, revertSort: Boolean): LiveData<List<Habit>> =
     if(!filter.isNullOrEmpty())
         if(!revertSort)
-            this.getFilteredAndForwardOrderHabits(filter)
+            this.getFilteredAndForwardSortHabitsByDate(filter)
         else
-            this.getFilteredAndBackwardOrderHabits(filter)
+            this.getFilteredAndBackwardSortHabitsByDate(filter)
     else
         if(!revertSort)
-            this.getAllHabitsACSOrderByDate()
+            this.getAllHabitsForwarOrderByDate()
         else
-            this.getAllHabitsDESCOrderByDate()
+            this.getAllHabitsBackwardOrderByDate()

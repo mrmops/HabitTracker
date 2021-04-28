@@ -30,5 +30,9 @@ data class Habit(
     override fun equals(other: Any?): Boolean {
         return other != null && other is Habit && other.id == id
     }
+
+    override fun hashCode(): Int {
+        return id?.hashCode() ?: 0
+    }
 }
 

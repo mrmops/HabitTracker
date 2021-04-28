@@ -8,12 +8,19 @@ import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
+import kotlinx.coroutines.*
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
-class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel() {
+class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel(), CoroutineScope {
+    private val job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler {_, e -> throw e}
 
     private val mutableHabitUpdate: MutableLiveData<Habit> = MutableLiveData()
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
+
     private var name: String? = null
     private var color: HSVColor? = null
     private var description: String? = null
@@ -50,14 +57,15 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
         mutableHabitUpdate.postValue(habit)
     }
 
-    fun saveToDb(){
+    suspend fun saveToDb(){
         habitDao.insertHabit(habit)
     }
 
-    fun submitAndSaveToDb(){
+    fun submitAndSaveToDb() = launch {
         submit()
-        saveToDb()
+        withContext(Dispatchers.IO){ saveToDb() }
     }
+
 
     fun updateName(name: String) {
         this.name = name

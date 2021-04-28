@@ -12,23 +12,23 @@ interface HabitDao {
     fun getAllHabits(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit ORDER BY dateOfUpdate ASC")
-    fun getAllHabitsACSOrderByDate(): LiveData<List<Habit>>
+    fun getAllHabitsForwarOrderByDate(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit ORDER BY dateOfUpdate DESC")
-    fun getAllHabitsDESCOrderByDate(): LiveData<List<Habit>>
+    fun getAllHabitsBackwardOrderByDate(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit WHERE name LIKE '%'||(:nameFilter)||'%' ORDER BY dateOfUpdate ASC")
-    fun getFilteredAndForwardOrderHabits(nameFilter: String?): LiveData<List<Habit>>
+    fun getFilteredAndForwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit WHERE name LIKE '%'||(:nameFilter)||'%' ORDER BY dateOfUpdate DESC")
-    fun getFilteredAndBackwardOrderHabits(nameFilter: String?): LiveData<List<Habit>>
+    fun getFilteredAndBackwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit WHERE id = (:selectedId) LIMIT 1")
     fun getHabitById(selectedId: Long): LiveData<Habit>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertHabit(habit: Habit)
+    suspend fun insertHabit(habit: Habit)
 
     @Delete
-    fun deleteHabit(habit: Habit)
+    suspend fun deleteHabit(habit: Habit)
 }

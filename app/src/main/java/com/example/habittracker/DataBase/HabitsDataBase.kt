@@ -23,8 +23,7 @@ abstract class HabitsDataBase() : RoomDatabase() {
                 context,
                 HabitsDataBase::class.java,
                 DB_NAME
-            ).allowMainThreadQueries()
-                .build()
+            ).build()
         }
 
         fun getInstance(context: Context): HabitsDataBase {

@@ -27,10 +27,6 @@ class SortedAndFilteredHabitsListViewModel(@NotNull private val dataBase: Habits
         habitFilteredParams.postValue(filteredParams)
     }
 
-    fun addOrUpdateHabit(habit: Habit) {
-        habitDao.insertHabit(habit)
-    }
-
     fun changeSortDirection(direction: SortDirection) {
         val newRevertedValue = when (direction) {
             SortDirection.Forward -> false

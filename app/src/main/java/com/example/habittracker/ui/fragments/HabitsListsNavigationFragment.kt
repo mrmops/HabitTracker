@@ -24,8 +24,6 @@ import java.util.*
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
 
     companion object {
-        private const val HABIT_CREATE = 0
-        private const val HABIT_EDIT = 1
         private val LOG_KEY = HabitsListsNavigationFragment::class.java.name
     }
 
@@ -77,30 +75,11 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
     override fun onHabitItemClick(habit: Habit) = habitClickCallBack?.onHabitClick(habit) ?: Unit
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        when (resultCode) {
-            AppCompatActivity.RESULT_OK -> {
-                val habit = HabitEditActivity.fromResult(data!!)
-                when (requestCode) {
-                    HABIT_CREATE -> {
-                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
-                    }
-                    HABIT_EDIT -> {
-                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
-                    }
-                }
-            }
-            else -> Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        habitClickCallBack = if (context is ClickHabitItemCallBack) {
+        habitClickCallBack = if (context is ClickHabitItemCallBack)
             context
-        } else
+        else
             throw IllegalArgumentException("Активити не реализует интерфейс callBack ${ClickHabitItemCallBack::class.java.name}")
     }
 
@@ -112,10 +91,6 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onDestroy() {
         super.onDestroy()
         Log.d(LOG_KEY, "On destroy")
-    }
-
-    fun addOrUpdateHabit(habit: Habit) {
-        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
     }
 
     interface ClickHabitItemCallBack {
