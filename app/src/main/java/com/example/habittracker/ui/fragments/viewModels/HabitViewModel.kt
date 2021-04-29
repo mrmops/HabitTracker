@@ -38,6 +38,14 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
         mutableHabitUpdate.value = habit
     }
 
+
+    fun submitAndSaveToDbAsync() = launch(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
+            submit()
+            saveToDbAsync()
+        }
+    }
+
     fun submit() {
         if (name != null)
             habit.name = name!!
@@ -61,14 +69,6 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
     private suspend fun saveToDbAsync() {
         habitDao.insertHabit(habit)
     }
-
-    fun submitAndSaveToDbAsync() = launch(Dispatchers.Main) {
-        withContext(Dispatchers.IO) {
-            submit()
-            saveToDbAsync()
-        }
-    }
-
 
     fun updateName(name: String) {
         this.name = name
@@ -101,5 +101,10 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
 
     fun updateDateOfUpdate(date: Date) {
         this.dateOfUpdate = date
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineContext.cancelChildren()
     }
 }
