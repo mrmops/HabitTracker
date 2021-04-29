@@ -105,6 +105,6 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
 
     override fun onCleared() {
         super.onCleared()
-        coroutineContext.cancelChildren()
+        //coroutineContext.cancelChildren()
     }
 }
