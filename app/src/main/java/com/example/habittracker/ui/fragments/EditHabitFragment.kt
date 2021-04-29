@@ -119,7 +119,7 @@ class EditHabitFragment : Fragment() {
         habitViewModel.updatePriority(priorities[selectedItem]!!)
         habitViewModel.updateNumberRepeating(numberRepetitionsInput.text.toString().toInt())
         habitViewModel.updateDateOfUpdate(Date())
-        habitViewModel.submitAndSaveToDb()
+        habitViewModel.submitAndSaveToDbAsync()
     }
 
     private fun getHabitTypeFromRadioId(checkedRadioButtonId: Int): HabitType {

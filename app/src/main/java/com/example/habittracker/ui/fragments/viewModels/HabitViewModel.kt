@@ -12,11 +12,12 @@ import kotlinx.coroutines.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel(), CoroutineScope {
+class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel(),
+    CoroutineScope {
     private val job = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job + CoroutineExceptionHandler {_, e -> throw e}
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e -> throw e }
 
     private val mutableHabitUpdate: MutableLiveData<Habit> = MutableLiveData()
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
@@ -38,32 +39,34 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
     }
 
     fun submit() {
-        if(name != null)
+        if (name != null)
             habit.name = name!!
-        if(color != null)
+        if (color != null)
             habit.color = color!!
-        if(description != null)
+        if (description != null)
             habit.description = description!!
-        if(periodic != null)
+        if (periodic != null)
             habit.periodic = periodic!!
-        if(type != null)
+        if (type != null)
             habit.type = type!!
-        if(priority != null)
+        if (priority != null)
             habit.priority = priority!!
-        if(numberRepeating != null)
+        if (numberRepeating != null)
             habit.numberRepeating = numberRepeating!!
-        if(dateOfUpdate != null)
+        if (dateOfUpdate != null)
             habit.dateOfUpdate = dateOfUpdate!!
         mutableHabitUpdate.postValue(habit)
     }
 
-    suspend fun saveToDb(){
+    private suspend fun saveToDbAsync() {
         habitDao.insertHabit(habit)
     }
 
-    fun submitAndSaveToDb() = launch {
-        submit()
-        withContext(Dispatchers.IO){ saveToDb() }
+    fun submitAndSaveToDbAsync() = launch(Dispatchers.Main) {
+        withContext(Dispatchers.IO) {
+            submit()
+            saveToDbAsync()
+        }
     }
 
 
