@@ -2,41 +2,29 @@ package com.example.habittracker.ui.fragments.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.example.habittracker.DataBase.HabitDao
+import com.example.habittracker.DataBase.HabitsDataBase
+import com.example.habittracker.DataBase.filterAndSortHabitsByDate
 import com.example.habittracker.Models.Habit
-import java.util.*
-import kotlin.collections.HashMap
+import org.jetbrains.annotations.NotNull
 
-class SortedAndFilteredHabitsListViewModel : ViewModel() {
+class SortedAndFilteredHabitsListViewModel(@NotNull private val dataBase: HabitsDataBase) :
+    ViewModel() {
 
-    private val habits: HashMap<UUID, Habit> = HashMap()
-    private var filterString: String? = null
-    private var revertedSort = false
+    private var filteredParams: FilteredParams = FilteredParams(null, false)
+    private val habitDao: HabitDao = dataBase.habitDao()
 
-    private val mutableListHabits: MutableLiveData<List<Habit>> = MutableLiveData()
+    private val habitFilteredParams: MutableLiveData<FilteredParams> = MutableLiveData()
 
-    val listHabits: LiveData<List<Habit>> = mutableListHabits
+    val listHabits: LiveData<List<Habit>> =
+        Transformations.switchMap(habitFilteredParams) { param ->
+            habitDao.filterAndSortHabitsByDate(param.nameFilter, param.invertSort)
+        }
 
     init {
-        mutableListHabits.value = habits.values.toList()
-    }
-
-    fun addOrUpdateHabit(habit: Habit) {
-        habits[habit.id] = habit
-        updateList()
-    }
-
-    private fun updateList() {
-        val habits =
-            (if (filterString.isNullOrEmpty())
-                this.habits.values
-            else
-                this.habits.values.filter { it.name.contains(filterString!!, true) })
-
-        if (revertedSort)
-            mutableListHabits.postValue(habits.sortedBy{ it.dateOfUpdate })
-        else
-            mutableListHabits.postValue(habits.sortedByDescending { it.dateOfUpdate })
+        habitFilteredParams.postValue(filteredParams)
     }
 
     fun changeSortDirection(direction: SortDirection) {
@@ -44,15 +32,15 @@ class SortedAndFilteredHabitsListViewModel : ViewModel() {
             SortDirection.Forward -> false
             SortDirection.Backward -> true
         }
-        if (newRevertedValue != revertedSort) {
-            revertedSort = newRevertedValue
-            updateList()
+        if (newRevertedValue != filteredParams.invertSort) {
+            filteredParams.invertSort = newRevertedValue
+            habitFilteredParams.postValue(filteredParams)
         }
     }
 
     fun changeFilter(filter: String) {
-        filterString = filter
-        updateList()
+        filteredParams.nameFilter = filter
+        habitFilteredParams.postValue(filteredParams)
     }
 
     enum class SortDirection {
@@ -60,5 +48,7 @@ class SortedAndFilteredHabitsListViewModel : ViewModel() {
         Backward
     }
 }
+
+class FilteredParams(var nameFilter: String?, @NotNull var invertSort: Boolean)
 
 

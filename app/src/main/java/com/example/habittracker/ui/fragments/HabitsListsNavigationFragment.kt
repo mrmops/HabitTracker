@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
+import com.example.habittracker.DataBase.HabitsDataBase
 import com.example.habittracker.HabitEditActivity
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.R
@@ -23,8 +24,6 @@ import java.util.*
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
 
     companion object {
-        private const val HABIT_CREATE = 0
-        private const val HABIT_EDIT = 1
         private val LOG_KEY = HabitsListsNavigationFragment::class.java.name
     }
 
@@ -35,10 +34,12 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dataBase = HabitsDataBase.getInstance(requireContext())
+
         viewModelSortedAndFilteredHabits =
             ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return SortedAndFilteredHabitsListViewModel() as T
+                    return SortedAndFilteredHabitsListViewModel(dataBase) as T
                 }
             }).get(SortedAndFilteredHabitsListViewModel::class.java)
     }
@@ -74,30 +75,11 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
     override fun onHabitItemClick(habit: Habit) = habitClickCallBack?.onHabitClick(habit) ?: Unit
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        when (resultCode) {
-            AppCompatActivity.RESULT_OK -> {
-                val habit = HabitEditActivity.fromResult(data!!)
-                when (requestCode) {
-                    HABIT_CREATE -> {
-                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
-                    }
-                    HABIT_EDIT -> {
-                        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
-                    }
-                }
-            }
-            else -> Log.e(LOG_KEY, "requestCode = $requestCode, resultCode = $resultCode")
-        }
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        habitClickCallBack = if (context is ClickHabitItemCallBack) {
+        habitClickCallBack = if (context is ClickHabitItemCallBack)
             context
-        } else
+        else
             throw IllegalArgumentException("Активити не реализует интерфейс callBack ${ClickHabitItemCallBack::class.java.name}")
     }
 
@@ -109,10 +91,6 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onDestroy() {
         super.onDestroy()
         Log.d(LOG_KEY, "On destroy")
-    }
-
-    fun addOrUpdateHabit(habit: Habit) {
-        viewModelSortedAndFilteredHabits.addOrUpdateHabit(habit)
     }
 
     interface ClickHabitItemCallBack {
