@@ -111,14 +111,14 @@ class EditHabitFragment : Fragment() {
     }
 
     private fun setHabitValues() {
-        habitViewModel.updateName(nameInput.text.toString())
-        habitViewModel.updateDescription(descriptionInput.text.toString())
-        habitViewModel.updatePeriodic(periodicityInput.text.toString())
-        habitViewModel.updateHabitType(getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId))
+        habitViewModel.name = nameInput.text.toString()
+        habitViewModel.description = descriptionInput.text.toString()
+        habitViewModel.periodic = periodicityInput.text.toString()
+        habitViewModel.type = getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId)
         val selectedItem = prioritySpinner.selectedItem as String
-        habitViewModel.updatePriority(priorities[selectedItem]!!)
-        habitViewModel.updateNumberRepeating(numberRepetitionsInput.text.toString().toInt())
-        habitViewModel.updateDateOfUpdate(Date())
+        habitViewModel.priority = priorities[selectedItem]!!
+        habitViewModel.numberRepeating  = numberRepetitionsInput.text.toString().toInt()
+        habitViewModel.dateOfUpdate  = Date()
         habitViewModel.submitAndSaveToDbAsync()
     }
 
