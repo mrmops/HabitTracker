@@ -11,6 +11,6 @@ fun HabitDao.filterAndSortHabitsByDate(filter: String?, revertSort: Boolean): Li
             this.getFilteredAndBackwardSortHabitsByDate(filter)
     else
         if(!revertSort)
-            this.getAllHabitsForwarOrderByDate()
+            this.getAllHabitsForwardOrderByDate()
         else
             this.getAllHabitsBackwardOrderByDate()

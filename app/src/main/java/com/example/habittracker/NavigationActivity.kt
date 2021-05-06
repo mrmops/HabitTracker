@@ -4,29 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.findFragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.example.habittracker.DataBase.HabitsDataBase
-import com.example.habittracker.DataBase.HabitsDataBase_Impl
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.ui.fragments.EditHabitFragment
-import com.example.habittracker.ui.fragments.EditHabitFragmentDirections
 import com.example.habittracker.ui.fragments.HabitsListsNavigationFragment
 import com.example.habittracker.ui.fragments.HabitsListsNavigationFragmentDirections
-import com.example.habittracker.ui.fragments.viewModels.SortedAndFilteredHabitsListViewModel
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import java.util.*
 
 class NavigationActivity : AppCompatActivity(),
     HabitsListsNavigationFragment.ClickHabitItemCallBack, EditHabitFragment.IResultCallBack {
@@ -52,13 +41,13 @@ class NavigationActivity : AppCompatActivity(),
     }
 
     override fun onHabitClick(habit: Habit) {
-        Log.d(LOG_KEY, "Move to edit habit with id = ${habit.id}")
+        Log.d(LOG_KEY, "Move to edit habit with id = ${habit.serverId}")
         directEditHabitFragment(habit)
     }
 
     override fun onNewHabitButtonClick() {
         val habit = Habit()
-        Log.d(LOG_KEY, "Move to create habit with id = ${habit.id}")
+        Log.d(LOG_KEY, "Move to create habit with id = ${habit.serverId}")
         directEditHabitFragment(habit)
     }
 

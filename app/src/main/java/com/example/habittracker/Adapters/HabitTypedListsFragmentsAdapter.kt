@@ -5,15 +5,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.LifecycleOwner
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.ListHabitFragment
-import com.example.habittracker.ui.fragments.viewModels.SortedAndFilteredHabitsListViewModel
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class HabitTypedListsFragmentsAdapter(
     habits: List<Habit>?,

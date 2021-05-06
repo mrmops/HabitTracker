@@ -8,11 +8,18 @@ import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
+import com.example.habittracker.Networking.Dtos.toDto
+import com.example.habittracker.Networking.Services.HabitNetworkService
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.NotNull
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) : ViewModel(),
+class HabitViewModel(
+    @NotNull private val habit: Habit,
+    @NotNull private val habitDao: HabitDao,
+    @NotNull private val habitService: HabitNetworkService
+) : ViewModel(),
     CoroutineScope {
     private val job = SupervisorJob()
 
@@ -23,9 +30,9 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
 
     var name: String? = habit.name
-    var color: HSVColor? = habit.color
+    var color: HSVColor? = habit.color ?: HSVColor()
     var description: String? = habit.description
-    var periodic: String? = habit.periodic
+    var periodic: Int? = habit.periodic
     var type: HabitType? = habit.type
     var priority: Priority? = habit.priority
     var numberRepeating: Int? = habit.numberRepeating
@@ -38,14 +45,17 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
         mutableHabitUpdate.postValue(habit)
     }
 
-    fun submitAndSaveToDbAsync() = launch(Dispatchers.Main) {
-        withContext(Dispatchers.IO) {
+    fun submitAndSaveToDbAsync() = launch(Dispatchers.IO) {
             submit()
-            saveToDbAsync()
-        }
+            habitDao.insertHabit(habit)
+            val id = addOrUpdateOnServerAsync(habit)
+            habitDao.deleteHabit(habit)
+            habit.serverId = id
+            habit.uploadOnServer = true
+            habitDao.insertHabit(habit)
     }
 
-    fun submit() {
+    private fun submit() {
         if (name != null)
             habit.name = name!!
         if (color != null)
@@ -65,9 +75,8 @@ class HabitViewModel(private val habit: Habit, private val habitDao: HabitDao) :
         mutableHabitUpdate.postValue(habit)
     }
 
-    private suspend fun saveToDbAsync() {
-        habitDao.insertHabit(habit)
-    }
+    private suspend fun addOrUpdateOnServerAsync(habit:Habit): UUID =
+        habitService.addOrUpdate(habit.toDto()).id
 
     fun updateColor(color: HSVColor) {
         this.color = color

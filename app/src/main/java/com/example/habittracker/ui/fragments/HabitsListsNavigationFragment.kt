@@ -1,24 +1,22 @@
 package com.example.habittracker.ui.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
 import com.example.habittracker.DataBase.HabitsDataBase
-import com.example.habittracker.HabitEditActivity
 import com.example.habittracker.Models.Habit
+import com.example.habittracker.Networking.RetrofitHelper
+import com.example.habittracker.Networking.Services.HabitNetworkService
 import com.example.habittracker.R
-import com.example.habittracker.ui.fragments.viewModels.SortedAndFilteredHabitsListViewModel
+import com.example.habittracker.ui.fragments.viewModels.HabitsListViewModel
 import kotlinx.android.synthetic.main.fragment_habits.*
-import java.util.*
 
 
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
@@ -27,7 +25,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         private val LOG_KEY = HabitsListsNavigationFragment::class.java.name
     }
 
-    private lateinit var viewModelSortedAndFilteredHabits: SortedAndFilteredHabitsListViewModel;
+    private lateinit var viewModelHabits: HabitsListViewModel;
     private lateinit var habitTypedListsFragmentsAdapter: HabitTypedListsFragmentsAdapter
     private var habitClickCallBack: ClickHabitItemCallBack? = null
 
@@ -36,12 +34,14 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
         val dataBase = HabitsDataBase.getInstance(requireContext())
 
-        viewModelSortedAndFilteredHabits =
+        val habitApiService = RetrofitHelper.newInstance(requireContext()).create(HabitNetworkService::class.java)
+
+        viewModelHabits =
             ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return SortedAndFilteredHabitsListViewModel(dataBase) as T
+                    return HabitsListViewModel(dataBase.habitDao(), habitApiService) as T
                 }
-            }).get(SortedAndFilteredHabitsListViewModel::class.java)
+            }).get(HabitsListViewModel::class.java)
     }
 
 
@@ -60,7 +60,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
             .commit()
 
         habitTypedListsFragmentsAdapter = HabitTypedListsFragmentsAdapter(
-            viewModelSortedAndFilteredHabits.listHabits.value,
+            viewModelHabits.listHabits.value,
             requireContext(),
             habitsViewPager,
             childFragmentManager
@@ -69,7 +69,7 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         habitsPagerTabLayout.setupWithViewPager(habitsViewPager)
 
         fab.setOnClickListener { habitClickCallBack?.onNewHabitButtonClick() }
-        viewModelSortedAndFilteredHabits.listHabits.observe(viewLifecycleOwner,
+        viewModelHabits.listHabits.observe(viewLifecycleOwner,
             { habits -> habitTypedListsFragmentsAdapter.updateHabits(habits) })
     }
 
