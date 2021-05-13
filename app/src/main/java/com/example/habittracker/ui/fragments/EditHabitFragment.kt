@@ -17,6 +17,7 @@ import com.example.habittracker.Infrastructure.firstOrNull
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
+import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
 import com.example.habittracker.Networking.RetrofitHelper
 import com.example.habittracker.Networking.Services.HabitNetworkService
 import com.example.habittracker.R
@@ -45,11 +46,11 @@ class EditHabitFragment : Fragment() {
 
         val dao = HabitsDataBase.getInstance(requireContext()).habitDao()
         val habitApiService =
-            RetrofitHelper.newInstance(requireContext()).create(HabitNetworkService::class.java)
+            RetrofitHelper.newInstance().create(HabitNetworkService::class.java)
 
         habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(args.habit, dao, habitApiService) as T
+                return HabitViewModel(args.habit, HabitRepository(habitApiService, dao)) as T
             }
         }).get(HabitViewModel::class.java)
     }

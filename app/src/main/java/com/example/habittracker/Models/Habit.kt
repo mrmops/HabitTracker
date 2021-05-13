@@ -32,6 +32,7 @@ data class Habit(
     var serverId: UUID = UUID.randomUUID()
 
     var uploadOnServer = false
+    var wasUpdatedLocal = true
 
     var dateOfUpdate: Date? = null
 

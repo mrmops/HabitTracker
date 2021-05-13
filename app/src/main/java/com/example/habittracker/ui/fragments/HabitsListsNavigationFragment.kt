@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
 import com.example.habittracker.DataBase.HabitsDataBase
 import com.example.habittracker.Models.Habit
+import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
 import com.example.habittracker.Networking.RetrofitHelper
 import com.example.habittracker.Networking.Services.HabitNetworkService
 import com.example.habittracker.R
@@ -34,12 +35,17 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
 
         val dataBase = HabitsDataBase.getInstance(requireContext())
 
-        val habitApiService = RetrofitHelper.newInstance(requireContext()).create(HabitNetworkService::class.java)
+        val habitApiService = RetrofitHelper.newInstance().create(HabitNetworkService::class.java)
 
         viewModelHabits =
             ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return HabitsListViewModel(dataBase.habitDao(), habitApiService) as T
+                    return HabitsListViewModel(
+                        HabitRepository(
+                            habitApiService,
+                            dataBase.habitDao()
+                        )
+                    ) as T
                 }
             }).get(HabitsListViewModel::class.java)
     }

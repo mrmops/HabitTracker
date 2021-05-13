@@ -1,6 +1,5 @@
 package com.example.habittracker.Networking
 
-import android.content.Context
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
 import com.example.habittracker.Networking.Interceptors.AuthInterceptor
@@ -18,9 +17,9 @@ class RetrofitHelper {
 
     companion object {
 
-        fun newInstance(context: Context): Retrofit {
+        fun newInstance(): Retrofit {
             val okHttpClient = OkHttpClient.Builder()
-                .addInterceptor(AuthInterceptor(context))
+                .addInterceptor(AuthInterceptor())
                 .addInterceptor(HttpLoggingInterceptor())
                 .build()
 

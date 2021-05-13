@@ -3,13 +3,11 @@ package com.example.habittracker.ui.fragments.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.habittracker.DataBase.HabitDao
 import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
-import com.example.habittracker.Networking.Dtos.toDto
-import com.example.habittracker.Networking.Services.HabitNetworkService
+import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
@@ -17,8 +15,7 @@ import kotlin.coroutines.CoroutineContext
 
 class HabitViewModel(
     @NotNull private val habit: Habit,
-    @NotNull private val habitDao: HabitDao,
-    @NotNull private val habitService: HabitNetworkService
+    @NotNull private val habitRepository: HabitRepository
 ) : ViewModel(),
     CoroutineScope {
     private val job = SupervisorJob()
@@ -36,15 +33,7 @@ class HabitViewModel(
         mutableHabitUpdate.postValue(habit)
     }
 
-    fun submitAndSaveToDbAsync() = launch(Dispatchers.IO) {
-            submit()
-            habitDao.insertHabit(habit)
-            val id = addOrUpdateOnServerAsync(habit)
-            habitDao.deleteHabit(habit)
-            habit.serverId = id
-            habit.uploadOnServer = true
-            habitDao.insertHabit(habit)
-    }
+    fun saveHabit() = launch(Dispatchers.IO) { habitRepository.saveHabit(habit) }
 
 
     fun submit(
@@ -68,8 +57,6 @@ class HabitViewModel(
         habit.dateOfUpdate = dateOfUpdate
     }
 
-    private suspend fun addOrUpdateOnServerAsync(habit:Habit): UUID =
-        habitService.addOrUpdate(habit.toDto()).id
 
     fun updateColor(color: HSVColor) {
         mutableColorUpdate.postValue(color)
