@@ -14,7 +14,7 @@
 
         <activity
             android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation_actvity"
+            android:label="@string/title_activity_navigation_activity"
             android:theme="@style/Theme.HabitTracker.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".HabitEditActivity" />
     </application>
 
 </manifest>

@@ -11,7 +11,12 @@ import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habit_item.view.*
 import java.text.SimpleDateFormat
 
-class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<HabitAdapter.HabitViewHolder>() {
+class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object{
+        private const val ELEMENT_VIEW_TYPE = 0
+        private const val FOOTER_VIEW_TYPE = 1
+    }
 
     var onItemClickListener: OnItemClickListener? = null
 
@@ -19,19 +24,28 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<H
         fun onItemClick(habit: Habit)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HabitViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return HabitViewHolder(inflater.inflate(R.layout.habit_item, parent, false))
+        if(viewType == ELEMENT_VIEW_TYPE)
+            return HabitViewHolder(inflater.inflate(R.layout.habit_item, parent, false))
+        return FooterViewHolder(inflater.inflate(R.layout.empty100dp, parent, false))
     }
 
-    override fun onBindViewHolder(holder: HabitViewHolder, position: Int) {
-        val habit = habits[position]
-        holder.itemView.setOnClickListener{ onItemClickListener?.onItemClick(habit)}
-        holder.bind(habit)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if(getItemViewType(position) == ELEMENT_VIEW_TYPE) {
+            val habit = habits[position]
+            val habitViewHolder = holder as HabitViewHolder
+            habitViewHolder.itemView.setOnClickListener { onItemClickListener?.onItemClick(habit) }
+            habitViewHolder.bind(habit)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == habits.size) FOOTER_VIEW_TYPE else ELEMENT_VIEW_TYPE
     }
 
     override fun getItemCount(): Int {
-        return habits.size
+        return habits.size + 1
     }
 
     fun updateItems(habits: List<Habit>){
@@ -42,7 +56,6 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<H
     class HabitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val nameTextView: TextView = itemView.habitName
         private val descriptionTextView = itemView.description
-//        private val periodTextView = itemView.habitPeriod
         private val dateOfUpdateTextView = itemView.habitDateOfUpdate
         private val priorityTextView = itemView.habitPriority
         private val typeTextView = itemView.habitType
@@ -76,4 +89,6 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<H
             repeatTextView.text = habit.numberRepeating.toString()
         }
     }
+
+    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

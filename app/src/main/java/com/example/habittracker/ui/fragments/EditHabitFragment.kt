@@ -65,7 +65,7 @@ class EditHabitFragment : Fragment() {
         habitViewModel.colorUpdate.observe(
             viewLifecycleOwner,
             { color -> selectedColorView.setColorFilter(color.toArgbColor()) })
-        habitViewModel.habitUpdate.observe(viewLifecycleOwner, { habit -> setInputsValue(habit) })
+        setInputsValue(args.habit)
         setDefaultValues()
         submitButton.setOnClickListener { submitHabitData() }
         selectedColorView.setOnClickListener {
@@ -122,22 +122,20 @@ class EditHabitFragment : Fragment() {
     }
 
     private fun setHabitValues() {
-        habitViewModel.name = nameInput.text.toString()
-        habitViewModel.description = descriptionInput.text.toString()
-
         val periodicStr = periodicityInput.text.toString()
-        habitViewModel.periodic = if (periodicStr.isNotEmpty()) periodicStr.toInt() else 0
-
-        habitViewModel.type = getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId)
         val selectedItem = prioritySpinner.selectedItem as String
-        habitViewModel.priority = priorities[selectedItem]!!
+        val numberOfRepeatingToString = numberRepetitionsInput.text.toString()
 
-        val toString = numberRepetitionsInput.text.toString()
-        habitViewModel.numberRepeating = if (toString.isEmpty()) 0 else toString.toInt()
-
-        habitViewModel.dateOfUpdate = Date()
-
-        habitViewModel.submitAndSaveToDbAsync()
+        habitViewModel.submit(
+            nameInput.text.toString(),
+            descriptionInput.text.toString(),
+            if (periodicStr.isNotEmpty()) periodicStr.toInt() else 0,
+            getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId),
+            priorities[selectedItem]!!,
+            if (numberOfRepeatingToString.isEmpty()) 0 else numberOfRepeatingToString.toInt(),
+            Date()
+        )
+        habitViewModel.saveHabit()
     }
 
     private fun getHabitTypeFromRadioId(checkedRadioButtonId: Int): HabitType {

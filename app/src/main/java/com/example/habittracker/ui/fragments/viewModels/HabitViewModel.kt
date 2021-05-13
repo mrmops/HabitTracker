@@ -29,15 +29,6 @@ class HabitViewModel(
     private val mutableHabitUpdate: MutableLiveData<Habit> = MutableLiveData()
     private val mutableColorUpdate: MutableLiveData<HSVColor> = MutableLiveData()
 
-    var name: String? = habit.name
-    var color: HSVColor? = habit.color ?: HSVColor()
-    var description: String? = habit.description
-    var periodic: Int? = habit.periodic
-    var type: HabitType? = habit.type
-    var priority: Priority? = habit.priority
-    var numberRepeating: Int? = habit.numberRepeating
-    var dateOfUpdate: Date? = habit.dateOfUpdate
-
     val habitUpdate: LiveData<Habit> = mutableHabitUpdate
     val colorUpdate: LiveData<HSVColor> = mutableColorUpdate
 
@@ -55,32 +46,33 @@ class HabitViewModel(
             habitDao.insertHabit(habit)
     }
 
-    private fun submit() {
-        if (name != null)
-            habit.name = name!!
+
+    fun submit(
+        name: String,
+        description: String,
+        periodic: Int,
+        type: HabitType,
+        priority: Priority,
+        numberRepeating: Int,
+        dateOfUpdate: Date
+    ) {
+        habit.name = name
+        val color = colorUpdate.value
         if (color != null)
-            habit.color = color!!
-        if (description != null)
-            habit.description = description!!
-        if (periodic != null)
-            habit.periodic = periodic!!
-        if (type != null)
-            habit.type = type!!
-        if (priority != null)
-            habit.priority = priority!!
-        if (numberRepeating != null)
-            habit.numberRepeating = numberRepeating!!
-        if (dateOfUpdate != null)
-            habit.dateOfUpdate = dateOfUpdate!!
-        mutableHabitUpdate.postValue(habit)
+            habit.color = color
+        habit.description = description
+        habit.periodic = periodic
+        habit.type = type
+        habit.priority = priority
+        habit.numberRepeating = numberRepeating
+        habit.dateOfUpdate = dateOfUpdate
     }
 
     private suspend fun addOrUpdateOnServerAsync(habit:Habit): UUID =
         habitService.addOrUpdate(habit.toDto()).id
 
     fun updateColor(color: HSVColor) {
-        this.color = color
-        mutableColorUpdate.postValue(this.color)
+        mutableColorUpdate.postValue(color)
     }
 
     override fun onCleared() {

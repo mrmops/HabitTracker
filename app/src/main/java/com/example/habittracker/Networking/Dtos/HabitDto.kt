@@ -1,6 +1,5 @@
 package com.example.habittracker.Networking.Dtos
 
-import android.graphics.Color
 import com.example.habittracker.Infrastructure.HSVColor
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
@@ -42,4 +41,4 @@ fun Habit.toDto(): HabitDto = HabitDto(
     this.priority,
     this.periodic ?: 0,
     this.numberRepeating ?: 0,
-this.color?.toArgbColor() ?: 0)
+this.color?.toArgbColor() ?: HSVColor().toArgbColor())
