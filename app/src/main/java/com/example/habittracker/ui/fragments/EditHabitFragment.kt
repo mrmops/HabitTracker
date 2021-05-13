@@ -133,8 +133,7 @@ class EditHabitFragment : Fragment() {
             if (periodicStr.isNotEmpty()) periodicStr.toInt() else 0,
             getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId),
             priorities[selectedItem]!!,
-            if (numberOfRepeatingToString.isEmpty()) 0 else numberOfRepeatingToString.toInt(),
-            Date()
+            if (numberOfRepeatingToString.isEmpty()) 0 else numberOfRepeatingToString.toInt()
         )
         habitViewModel.saveHabit()
     }

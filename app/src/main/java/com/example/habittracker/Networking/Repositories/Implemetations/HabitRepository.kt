@@ -48,6 +48,7 @@ class HabitRepository(
     }
 
     suspend fun saveHabit(habit: Habit) {
+        habit.dateOfUpdate = Date()
         habit.wasUpdatedLocal = true
         habitDao.insertHabit(habit)
         val id = addOrUpdateOnServer(habit)

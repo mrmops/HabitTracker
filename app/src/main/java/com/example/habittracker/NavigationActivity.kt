@@ -43,6 +43,7 @@ class NavigationActivity : AppCompatActivity(),
             AppBarConfiguration(setOf(R.id.nav_habits, R.id.nav_about_app), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
         val header: View = navView.getHeaderView(0)
         val imageView = header.imageView
         Glide.with(this)

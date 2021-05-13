@@ -42,8 +42,7 @@ class HabitViewModel(
         periodic: Int,
         type: HabitType,
         priority: Priority,
-        numberRepeating: Int,
-        dateOfUpdate: Date
+        numberRepeating: Int
     ) {
         habit.name = name
         val color = colorUpdate.value
@@ -54,7 +53,6 @@ class HabitViewModel(
         habit.type = type
         habit.priority = priority
         habit.numberRepeating = numberRepeating
-        habit.dateOfUpdate = dateOfUpdate
     }
 
 
