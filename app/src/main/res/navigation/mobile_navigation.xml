@@ -16,7 +16,7 @@
             app:popUpTo="@id/nav_habits">
             <argument
                 android:name="habit"
-                app:argType="com.example.habittracker.Models.Habit" />
+                app:argType="com.example.domain.Models.Habit" />
         </action>
     </fragment>
 
@@ -35,6 +35,6 @@
             app:destination="@id/nav_habits" />
         <argument
             android:name="habit"
-            app:argType="com.example.habittracker.Models.Habit" />
+            app:argType="com.example.domain.Models.Habit" />
     </fragment>
 </navigation>

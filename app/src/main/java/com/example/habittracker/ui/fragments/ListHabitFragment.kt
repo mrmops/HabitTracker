@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.habittracker.Adapters.HabitAdapter
-import com.example.habittracker.Models.Habit
+import com.example.domain.Models.Habit
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habits_resycler_list_fragment.*
 import java.lang.Exception

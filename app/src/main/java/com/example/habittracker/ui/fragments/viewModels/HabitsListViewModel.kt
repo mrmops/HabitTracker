@@ -1,11 +1,8 @@
 package com.example.habittracker.ui.fragments.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
+import androidx.lifecycle.*
+import com.example.domain.Models.Habit
+import com.example.domain.Interfaces.HabitRepository
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import kotlin.coroutines.CoroutineContext
@@ -28,12 +25,13 @@ class HabitsListViewModel(
 
     val listHabits: LiveData<List<Habit>> =
         Transformations.switchMap(habitFilteredParams) { param ->
-            habitRepository.getLocalHabits(param.nameFilter, param.invertSort)
+            habitRepository.getLocalHabits(param.nameFilter, param.invertSort).asLiveData()
         }
 
     init {
         habitFilteredParams.postValue(filteredParams)
         updateHabits()
+        viewModelScope
     }
 
     private fun updateHabits() = launch(Dispatchers.IO) {

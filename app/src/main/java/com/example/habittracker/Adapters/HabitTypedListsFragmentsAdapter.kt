@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.Models.HabitType
+import com.example.domain.Models.Habit
+import com.example.domain.Models.HabitType
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.ListHabitFragment
 import kotlin.collections.ArrayList

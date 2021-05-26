@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.habittracker.Infrastructure.HSVColor
-import com.example.habittracker.Models.Habit
+import com.example.domain.Infrastructure.HSVColor
+import com.example.domain.Models.Habit
+import com.example.androidhelper.Infostructure.toAndroidColor
+import com.example.habittracker.Infostructure.toString
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habit_item.view.*
 import java.text.SimpleDateFormat
@@ -85,7 +87,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
             val context = priorityTextView.context
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
-            habitColor.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
+            habitColor.setColorFilter(habit.color?.toAndroidColor() ?: HSVColor().toAndroidColor())
             repeatTextView.text = habit.numberRepeating.toString()
         }
     }

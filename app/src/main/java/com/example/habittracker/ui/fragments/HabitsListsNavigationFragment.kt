@@ -9,12 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.domain.Models.Habit
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
-import com.example.habittracker.DataBase.HabitsDataBase
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
-import com.example.habittracker.Networking.RetrofitHelper
-import com.example.habittracker.Networking.Services.HabitNetworkService
+import com.example.habittracker.HabitApplication
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitsListViewModel
 import kotlinx.android.synthetic.main.fragment_habits.*
@@ -33,19 +30,13 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dataBase = HabitsDataBase.getInstance(requireContext())
-
-        val habitApiService = RetrofitHelper.newInstance().create(HabitNetworkService::class.java)
+        val habitRepo = (requireActivity().application as HabitApplication).applicationComponent
+            .getHabitRepository()
 
         viewModelHabits =
             ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return HabitsListViewModel(
-                        HabitRepository(
-                            habitApiService,
-                            dataBase.habitDao()
-                        )
-                    ) as T
+                    return HabitsListViewModel(habitRepo) as T
                 }
             }).get(HabitsListViewModel::class.java)
     }
