@@ -2,33 +2,49 @@ package com.example.habittracker.DataBase
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.habittracker.DataBase.Converters.UUIDConverter
 import com.example.habittracker.Models.Habit
+import java.util.*
 import java.util.concurrent.Flow
 
 @Dao
-interface HabitDao {
+abstract class HabitDao {
+
+    @Transaction
+    open suspend fun  updateId(habit: Habit, id: UUID){
+        deleteHabit(habit)
+        habit.uploadOnServer = true
+        habit.serverId = id
+        insertHabit(habit)
+    }
 
     @Query("SELECT * FROM habit")
-    fun getAllHabits(): LiveData<List<Habit>>
+    abstract fun getAllHabitsLive(): LiveData<List<Habit>>
+
+    @Query("SELECT * FROM habit")
+    abstract fun getAllHabits(): List<Habit>
 
     @Query("SELECT * FROM habit ORDER BY dateOfUpdate ASC")
-    fun getAllHabitsForwarOrderByDate(): LiveData<List<Habit>>
+    abstract fun getAllHabitsForwardOrderByDate(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit ORDER BY dateOfUpdate DESC")
-    fun getAllHabitsBackwardOrderByDate(): LiveData<List<Habit>>
+    abstract fun getAllHabitsBackwardOrderByDate(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit WHERE name LIKE '%'||(:nameFilter)||'%' ORDER BY dateOfUpdate ASC")
-    fun getFilteredAndForwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
+    abstract fun getFilteredAndForwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habit WHERE name LIKE '%'||(:nameFilter)||'%' ORDER BY dateOfUpdate DESC")
-    fun getFilteredAndBackwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
+    abstract fun getFilteredAndBackwardSortHabitsByDate(nameFilter: String?): LiveData<List<Habit>>
 
-    @Query("SELECT * FROM habit WHERE id = (:selectedId) LIMIT 1")
-    fun getHabitById(selectedId: Long): LiveData<Habit>
+    @Query("SELECT * FROM habit WHERE serverId = (:selectedId) LIMIT 1")
+    abstract fun getHabitById(@TypeConverters(UUIDConverter::class)selectedId: UUID): LiveData<Habit>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHabit(habit: Habit)
+    abstract suspend fun insertHabit(habit: Habit)
+
+    @Update
+    abstract suspend fun updateHabit(habit: Habit)
 
     @Delete
-    suspend fun deleteHabit(habit: Habit)
+    abstract suspend fun deleteHabit(habit: Habit)
 }

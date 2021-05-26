@@ -54,7 +54,8 @@
             android:id="@+id/goodHabitRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/good_habit" />
+            android:text="@string/good_habit"
+            android:checked="true" />
 
         <RadioButton
             android:id="@+id/badHabitRadioButton"
@@ -80,7 +81,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/habitTypeRadioGroup"
         app:layout_constraintTop_toBottomOf="@+id/priorityLabel"
-        tools:listitem="@layout/support_simple_spinner_dropdown_item" />
+        tools:listitem="@layout/support_simple_spinner_dropdown_item"
+        />
 
     <TextView
         android:id="@+id/textView"

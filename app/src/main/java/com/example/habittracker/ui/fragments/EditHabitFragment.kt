@@ -17,6 +17,9 @@ import com.example.habittracker.Infrastructure.firstOrNull
 import com.example.habittracker.Models.Habit
 import com.example.habittracker.Models.HabitType
 import com.example.habittracker.Models.Priority
+import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
+import com.example.habittracker.Networking.RetrofitHelper
+import com.example.habittracker.Networking.Services.HabitNetworkService
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.fragment_edit_habit.*
@@ -42,10 +45,12 @@ class EditHabitFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val dao = HabitsDataBase.getInstance(requireContext()).habitDao()
+        val habitApiService =
+            RetrofitHelper.newInstance().create(HabitNetworkService::class.java)
 
         habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(args.habit, dao) as T
+                return HabitViewModel(args.habit, HabitRepository(habitApiService, dao)) as T
             }
         }).get(HabitViewModel::class.java)
     }
@@ -61,9 +66,8 @@ class EditHabitFragment : Fragment() {
         habitViewModel.colorUpdate.observe(
             viewLifecycleOwner,
             { color -> selectedColorView.setColorFilter(color.toArgbColor()) })
-        val habit = habitViewModel.habitUpdate.value
-        if (habit != null)
-            setInputsValue(habit)
+        setInputsValue(args.habit)
+        setDefaultValues()
         submitButton.setOnClickListener { submitHabitData() }
         selectedColorView.setOnClickListener {
             val newInstance = ColorPicker.newInstance(16)
@@ -71,11 +75,19 @@ class EditHabitFragment : Fragment() {
         }
     }
 
+    private fun setDefaultValues() {
+        val context = requireContext()
+        priorities = Priority.valuesToLocalizationStrings(context)
+        val prioritiesStrings = priorities.keys.toTypedArray()
+        prioritySpinner.adapter =
+            ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, prioritiesStrings)
+    }
+
     private fun setInputsValue(habit: Habit) {
         setPriority(habit)
         nameInput.setText(habit.name)
         descriptionInput.setText(habit.description)
-        periodicityInput.setText(habit.periodic)
+        periodicityInput.setText(habit.periodic?.toString())
         numberRepetitionsInput.setText(habit.numberRepeating.toString())
         habitTypeRadioGroup.check(getRadioButtonIdFromHabitType(habit.type))
         selectedColorView.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
@@ -111,15 +123,19 @@ class EditHabitFragment : Fragment() {
     }
 
     private fun setHabitValues() {
-        habitViewModel.name = nameInput.text.toString()
-        habitViewModel.description = descriptionInput.text.toString()
-        habitViewModel.periodic = periodicityInput.text.toString()
-        habitViewModel.type = getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId)
+        val periodicStr = periodicityInput.text.toString()
         val selectedItem = prioritySpinner.selectedItem as String
-        habitViewModel.priority = priorities[selectedItem]!!
-        habitViewModel.numberRepeating  = numberRepetitionsInput.text.toString().toInt()
-        habitViewModel.dateOfUpdate  = Date()
-        habitViewModel.submitAndSaveToDbAsync()
+        val numberOfRepeatingToString = numberRepetitionsInput.text.toString()
+
+        habitViewModel.submit(
+            nameInput.text.toString(),
+            descriptionInput.text.toString(),
+            if (periodicStr.isNotEmpty()) periodicStr.toInt() else 0,
+            getHabitTypeFromRadioId(habitTypeRadioGroup.checkedRadioButtonId),
+            priorities[selectedItem]!!,
+            if (numberOfRepeatingToString.isEmpty()) 0 else numberOfRepeatingToString.toInt()
+        )
+        habitViewModel.saveHabit()
     }
 
     private fun getHabitTypeFromRadioId(checkedRadioButtonId: Int): HabitType {

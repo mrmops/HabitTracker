@@ -18,7 +18,7 @@
     <string name="save">Сохранить</string>
     <string name="some_color">Some color</string>
     <string name="type">Тип</string>
-    <string name="title_activity_navigation_actvity">NavigationActvity</string>
+    <string name="title_activity_navigation_activity">NavigationActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="some_name">Какое либо имя</string>
