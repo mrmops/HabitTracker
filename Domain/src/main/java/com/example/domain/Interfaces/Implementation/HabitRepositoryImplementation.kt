@@ -1,9 +1,9 @@
-package com.example.domain
+package com.example.domain.Interfaces.Implementation
 
-import com.example.domain.Interfaces.HabitDataBaseService
-import com.example.domain.Interfaces.HabitNetworkRepository
 import com.example.domain.Interfaces.HabitRepository
 import com.example.domain.Models.Habit
+import com.example.domain.OuterInterfaces.HabitDataBaseService
+import com.example.domain.OuterInterfaces.HabitNetworkRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

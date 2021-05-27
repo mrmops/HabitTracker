@@ -1,8 +1,8 @@
 package com.example.habittracker.Dagger
 
-import com.example.domain.HabitRepositoryImplementation
-import com.example.domain.Interfaces.HabitDataBaseService
-import com.example.domain.Interfaces.HabitNetworkRepository
+import com.example.domain.Interfaces.Implementation.HabitRepositoryImplementation
+import com.example.domain.OuterInterfaces.HabitDataBaseService
+import com.example.domain.OuterInterfaces.HabitNetworkRepository
 import com.example.domain.Interfaces.HabitRepository
 import dagger.Module
 import dagger.Provides

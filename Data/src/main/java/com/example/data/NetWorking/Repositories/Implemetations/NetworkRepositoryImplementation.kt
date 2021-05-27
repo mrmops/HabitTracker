@@ -8,7 +8,7 @@ import com.example.data.NetWorking.Dtos.UuidDto
 import com.example.data.NetWorking.Dtos.toDto
 import com.example.data.NetWorking.Repositories.BaseNetworkRepository
 import com.example.data.NetWorking.Services.HabitNetworkService
-import com.example.domain.Interfaces.HabitNetworkRepository
+import com.example.domain.OuterInterfaces.HabitNetworkRepository
 import com.example.domain.Models.Habit
 import java.util.*
 

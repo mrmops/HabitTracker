@@ -16,8 +16,8 @@ import com.example.data.NetWorking.Serializations.DateSerialization
 import com.example.data.NetWorking.Serializations.HabitPrioritySerialization
 import com.example.data.NetWorking.Serializations.HabitTypeSerialization
 import com.example.data.NetWorking.Services.HabitNetworkService
-import com.example.domain.Interfaces.HabitDataBaseService
-import com.example.domain.Interfaces.HabitNetworkRepository
+import com.example.domain.OuterInterfaces.HabitDataBaseService
+import com.example.domain.OuterInterfaces.HabitNetworkRepository
 import com.example.domain.Models.Habit
 import com.example.domain.Models.HabitType
 import com.example.domain.Models.Priority

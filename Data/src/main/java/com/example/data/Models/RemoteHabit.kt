@@ -1,10 +1,7 @@
 package com.example.data.Models
 
 import androidx.room.*
-import com.example.data.DataBase.Converters.DateConverter
-import com.example.data.DataBase.Converters.HabitTypeConverter
-import com.example.data.DataBase.Converters.PriorityConverter
-import com.example.data.DataBase.Converters.UUIDConverter
+import com.example.data.DataBase.Converters.*
 import com.example.domain.Infrastructure.HSVColor
 import com.example.domain.Models.HabitType
 import com.example.domain.Models.Priority

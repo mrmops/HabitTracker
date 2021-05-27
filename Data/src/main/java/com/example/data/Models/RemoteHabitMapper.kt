@@ -4,35 +4,37 @@ import com.example.domain.Models.Habit
 
 class RemoteHabitMapper: Mapper<RemoteHabit, Habit>() {
 
-    override fun map(habit: RemoteHabit): Habit = Habit(
-        habit.name,
-        habit.description,
-        habit.type,
-        habit.priority,
-        habit.periodic,
-        habit.numberRepeating,
-        habit.color
+    override fun map(obj: RemoteHabit): Habit = Habit(
+        obj.name,
+        obj.description,
+        obj.type,
+        obj.priority,
+        obj.periodic,
+        obj.numberRepeating,
+        obj.doneDates,
+        obj.color
     ).apply {
-        serverId = habit.serverId
-        uploadOnServer = habit.uploadOnServer
-        wasUpdatedLocal = habit.wasUpdatedLocal
-        dateOfUpdate = habit.dateOfUpdate
+        serverId = obj.serverId
+        uploadOnServer = obj.uploadOnServer
+        wasUpdatedLocal = obj.wasUpdatedLocal
+        dateOfUpdate = obj.dateOfUpdate
     }
 
-    override fun reverseMap(habit: Habit): RemoteHabit {
+    override fun reverseMap(obj: Habit): RemoteHabit {
         return RemoteHabit(
-            habit.name,
-            habit.description,
-            habit.type,
-            habit.priority,
-            habit.periodic,
-            habit.numberRepeating,
-            habit.color
+            obj.name,
+            obj.description,
+            obj.type,
+            obj.priority,
+            obj.periodic,
+            obj.numberRepeating,
+            obj.doneDates,
+            obj.color
         ).apply {
-            serverId = habit.serverId
-            uploadOnServer = habit.uploadOnServer
-            wasUpdatedLocal = habit.wasUpdatedLocal
-            dateOfUpdate = habit.dateOfUpdate
+            serverId = obj.serverId
+            uploadOnServer = obj.uploadOnServer
+            wasUpdatedLocal = obj.wasUpdatedLocal
+            dateOfUpdate = obj.dateOfUpdate
         }
     }
 }

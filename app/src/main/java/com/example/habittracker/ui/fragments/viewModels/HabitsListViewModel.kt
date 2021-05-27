@@ -17,8 +17,6 @@ class HabitsListViewModel(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e -> throw e }
 
-
-
     private var filteredParams: FilteredParams = FilteredParams(null, false)
 
     private val habitFilteredParams: MutableLiveData<FilteredParams> = MutableLiveData()
