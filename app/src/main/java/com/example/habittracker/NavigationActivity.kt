@@ -1,5 +1,6 @@
 package com.example.habittracker
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -13,7 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.habittracker.Models.Habit
+import com.example.domain.Models.Habit
 import com.example.habittracker.ui.fragments.EditHabitFragment
 import com.example.habittracker.ui.fragments.HabitsListsNavigationFragment
 import com.example.habittracker.ui.fragments.HabitsListsNavigationFragmentDirections
@@ -85,4 +86,8 @@ class NavigationActivity : AppCompatActivity(),
     }
 
     override fun onFinishEditFragment() { navController.popBackStack() }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+    }
 }

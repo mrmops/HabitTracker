@@ -27,27 +27,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Name of habit!" />
 
-    <!--<TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/periodicity"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
-        app:layout_constraintStart_toStartOf="@+id/habitName"
-        app:layout_constraintTop_toBottomOf="@+id/habitName" />-->
-
-    <!--<TextView
-        android:id="@+id/habitPeriod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:layout_marginStart="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/habitName"
-        tools:text="Mon, The, Thu, Wen, Fri, Sat, Sun" />-->
-
     <TextView
         android:id="@+id/habitDateOfUpdate"
         android:layout_width="wrap_content"
@@ -128,6 +107,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/details_layout"
         tools:text="Description" />
+
+    <Button
+        android:id="@+id/doneHabitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done_habit"
+        app:layout_constraintBottom_toBottomOf="@+id/habitColor"
+        app:layout_constraintEnd_toStartOf="@+id/detailsButton"
+        app:layout_constraintStart_toEndOf="@+id/habitDateOfUpdate" />
 
     <ImageView
         android:id="@+id/detailsButton"

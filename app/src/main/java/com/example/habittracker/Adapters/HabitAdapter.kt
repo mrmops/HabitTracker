@@ -5,8 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.habittracker.Infrastructure.HSVColor
-import com.example.habittracker.Models.Habit
+import com.example.domain.Infrastructure.HSVColor
+import com.example.domain.Models.Habit
+import com.example.androidhelper.Infostructure.toAndroidColor
+import com.example.habittracker.Infostructure.toString
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habit_item.view.*
 import java.text.SimpleDateFormat
@@ -19,10 +21,6 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
     }
 
     var onItemClickListener: OnItemClickListener? = null
-
-    interface OnItemClickListener {
-        fun onItemClick(habit: Habit)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -37,6 +35,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
             val habitViewHolder = holder as HabitViewHolder
             habitViewHolder.itemView.setOnClickListener { onItemClickListener?.onItemClick(habit) }
             habitViewHolder.bind(habit)
+            habitViewHolder.doneButton.setOnClickListener { onItemClickListener?.onDoneButtonClick(habit) }
         }
     }
 
@@ -63,6 +62,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
         private val habitDetailsGroup = itemView.habitDetails
         private val habitColor = itemView.habitColor
         private val repeatTextView = itemView.numberRepetitionsTextView
+        val doneButton = itemView.doneHabitButton
 
         init {
             detailsButton.setOnClickListener {
@@ -85,10 +85,16 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
             val context = priorityTextView.context
             priorityTextView.text = habit.priority.toString(context)
             typeTextView.text = habit.type.toString(context)
-            habitColor.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
+            habitColor.setColorFilter(habit.color?.toAndroidColor() ?: HSVColor().toAndroidColor())
             repeatTextView.text = habit.numberRepeating.toString()
         }
     }
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface OnItemClickListener {
+        fun onItemClick(habit: Habit)
+
+        fun onDoneButtonClick(doneTarget: Habit)
+    }
 }

@@ -10,12 +10,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.habittracker.Infrastructure.HSVColor
-import com.example.habittracker.Infrastructure.HSVColorGradientGenerator
+import com.example.androidhelper.Infostructure.toAndroidColor
+import com.example.domain.Infrastructure.HSVColor
+import com.example.habittracker.Adapters.HSVColorGradientGenerator
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.fragment_color_picker.*
-import kotlinx.android.synthetic.main.fragment_color_picker.selectedColorView
+import javax.inject.Inject
 
 class ColorPicker : DialogFragment() {
     companion object {
@@ -33,7 +34,8 @@ class ColorPicker : DialogFragment() {
         }
     }
 
-    private lateinit var habitViewModel: HabitViewModel
+    @Inject
+    lateinit var habitViewModel: HabitViewModel
     private lateinit var selectedColor: HSVColor
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +97,7 @@ class ColorPicker : DialogFragment() {
             val colorHue = 360 * shiftImageViewCenter.toFloat() / totalPickerWidth
 
             val color = HSVColor().apply { Hue = colorHue }
-            imageView.setColorFilter(color.toArgbColor())
+            imageView.setColorFilter(color.toAndroidColor())
             imageView.setOnClickListener {
                 setSelectedColor(color)
             }
@@ -106,7 +108,7 @@ class ColorPicker : DialogFragment() {
 
     private fun setSelectedColor(color: HSVColor) {
         selectedColor = color
-        selectedColorView.setColorFilter(selectedColor.toArgbColor())
+        selectedColorView.setColorFilter(selectedColor.toAndroidColor())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

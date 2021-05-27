@@ -35,4 +35,9 @@
     <string name="sort_by_date">Сортировать по дате редактирования</string>
     <string name="sort_up_by_date">Сортировать вверх по дате</string>
     <string name="filtration">Фильтрация</string>
+    <string name="done_habit">Выполнить!</string>
+    <string name="good_small_done_message">Стоит выполнить это еще %1$s раз</string>
+    <string name="bad_small_done_message">Вы можете выполнить это еще %1$s раз</string>
+    <string name="good_ok_done_message">You are breathtaking</string>
+    <string name="bad_ok_done_message">Хватит это делать!</string>
 </resources>

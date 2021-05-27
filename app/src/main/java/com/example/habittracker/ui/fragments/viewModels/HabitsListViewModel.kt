@@ -1,11 +1,8 @@
 package com.example.habittracker.ui.fragments.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
+import androidx.lifecycle.*
+import com.example.domain.Models.Habit
+import com.example.domain.Interfaces.HabitRepository
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import kotlin.coroutines.CoroutineContext
@@ -20,20 +17,19 @@ class HabitsListViewModel(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, e -> throw e }
 
-
-
     private var filteredParams: FilteredParams = FilteredParams(null, false)
 
     private val habitFilteredParams: MutableLiveData<FilteredParams> = MutableLiveData()
 
     val listHabits: LiveData<List<Habit>> =
         Transformations.switchMap(habitFilteredParams) { param ->
-            habitRepository.getLocalHabits(param.nameFilter, param.invertSort)
+            habitRepository.getLocalHabits(param.nameFilter, param.invertSort).asLiveData()
         }
 
     init {
         habitFilteredParams.postValue(filteredParams)
         updateHabits()
+        viewModelScope
     }
 
     private fun updateHabits() = launch(Dispatchers.IO) {
@@ -61,6 +57,14 @@ class HabitsListViewModel(
     override fun onCleared() {
         super.onCleared()
         job.cancelChildren()
+    }
+
+    fun doneHabit(doneTarget: Habit) = launch(Dispatchers.IO) {
+        habitRepository.doneHabit(doneTarget.serverId)
+    }
+
+    suspend fun getHabitRemainingReps(doneTarget: Habit): Int = withContext(Dispatchers.IO) {
+        return@withContext habitRepository.remainingReps(doneTarget.serverId)
     }
 
     enum class SortDirection {

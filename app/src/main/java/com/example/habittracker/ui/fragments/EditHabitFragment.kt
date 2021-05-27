@@ -8,22 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import com.example.habittracker.DataBase.HabitsDataBase
-import com.example.habittracker.Infrastructure.HSVColor
-import com.example.habittracker.Infrastructure.firstOrNull
-import com.example.habittracker.Models.Habit
-import com.example.habittracker.Models.HabitType
-import com.example.habittracker.Models.Priority
-import com.example.habittracker.Networking.Repositories.Implemetations.HabitRepository
-import com.example.habittracker.Networking.RetrofitHelper
-import com.example.habittracker.Networking.Services.HabitNetworkService
+import com.example.habittracker.Infostructure.priorityValuesToLocalizationStrings
+import com.example.androidhelper.Infostructure.toAndroidColor
+import com.example.domain.Infrastructure.HSVColor
+import com.example.domain.Infrastructure.firstOrNull
+import com.example.domain.Models.Habit
+import com.example.domain.Models.HabitType
+import com.example.domain.Models.Priority
+import com.example.habittracker.HabitApplication
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.fragment_edit_habit.*
-import java.util.*
+import javax.inject.Inject
 
 class EditHabitFragment : Fragment() {
 
@@ -36,7 +33,8 @@ class EditHabitFragment : Fragment() {
         }
     }
 
-    private lateinit var habitViewModel: HabitViewModel
+    @Inject
+    lateinit var habitViewModel: HabitViewModel
     private lateinit var priorities: Map<String, Priority>
     private var callBack: IResultCallBack? = null
     val args: EditHabitFragmentArgs by navArgs()
@@ -44,15 +42,12 @@ class EditHabitFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val dao = HabitsDataBase.getInstance(requireContext()).habitDao()
-        val habitApiService =
-            RetrofitHelper.newInstance().create(HabitNetworkService::class.java)
-
-        habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(args.habit, HabitRepository(habitApiService, dao)) as T
-            }
-        }).get(HabitViewModel::class.java)
+        (requireActivity().application as HabitApplication).applicationComponent
+            .habitViewModelSubComponentBuilder()
+            .with(this)
+            .withHabit(args.habit)
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(
@@ -65,7 +60,7 @@ class EditHabitFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         habitViewModel.colorUpdate.observe(
             viewLifecycleOwner,
-            { color -> selectedColorView.setColorFilter(color.toArgbColor()) })
+            { color -> selectedColorView.setColorFilter(color.toAndroidColor()) })
         setInputsValue(args.habit)
         setDefaultValues()
         submitButton.setOnClickListener { submitHabitData() }
@@ -77,7 +72,7 @@ class EditHabitFragment : Fragment() {
 
     private fun setDefaultValues() {
         val context = requireContext()
-        priorities = Priority.valuesToLocalizationStrings(context)
+        priorities = priorityValuesToLocalizationStrings(context)
         val prioritiesStrings = priorities.keys.toTypedArray()
         prioritySpinner.adapter =
             ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, prioritiesStrings)
@@ -90,13 +85,13 @@ class EditHabitFragment : Fragment() {
         periodicityInput.setText(habit.periodic?.toString())
         numberRepetitionsInput.setText(habit.numberRepeating.toString())
         habitTypeRadioGroup.check(getRadioButtonIdFromHabitType(habit.type))
-        selectedColorView.setColorFilter(habit.color?.toArgbColor() ?: HSVColor().toArgbColor())
+        selectedColorView.setColorFilter(habit.color?.toAndroidColor() ?: HSVColor().toAndroidColor())
     }
 
 
     private fun setPriority(habit: Habit) {
         val context = requireContext()
-        priorities = Priority.valuesToLocalizationStrings(context)
+        priorities = priorityValuesToLocalizationStrings(context)
         val prioritiesStrings = priorities.keys.toTypedArray()
         prioritySpinner.adapter =
             ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, prioritiesStrings)

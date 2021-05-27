@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.habittracker.Adapters.HabitAdapter
-import com.example.habittracker.Models.Habit
+import com.example.domain.Models.Habit
 import com.example.habittracker.R
 import kotlinx.android.synthetic.main.habits_resycler_list_fragment.*
 import java.lang.Exception
@@ -20,16 +20,16 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         private const val HABITS_KEY = "Good habits key"
         private val LOG_KEY = ListHabitFragment::class.java.simpleName
 
-        fun newInstance(goodHabits:ArrayList<Habit>): ListHabitFragment {
+        fun newInstance(goodHabits: ArrayList<Habit>): ListHabitFragment {
             val fragment = ListHabitFragment()
-            val bundle = Bundle().apply { putSerializable(HABITS_KEY, goodHabits)}
+            val bundle = Bundle().apply { putSerializable(HABITS_KEY, goodHabits) }
             fragment.arguments = bundle
             return fragment
         }
     }
 
     private var habitAdapter: HabitAdapter? = null
-    private lateinit var habits:ArrayList<Habit>
+    private lateinit var habits: ArrayList<Habit>
     private var callBack: IHabitItemClick? = null
 
     override fun onCreateView(
@@ -40,16 +40,21 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         return inflate
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        habits = if(savedInstanceState == null){
-            if(arguments == null || !requireArguments().containsKey(HABITS_KEY))
+        habits = if (savedInstanceState == null) {
+            if (arguments == null || !requireArguments().containsKey(HABITS_KEY))
                 throw IllegalArgumentException("Фрагмент был инициализирован не через метод newInstance!")
             requireArguments().getSerializable(HABITS_KEY) as ArrayList<Habit>
-        } else{
+        } else {
             savedInstanceState.getSerializable(HABITS_KEY) as ArrayList<Habit>
         }
-        habitsRecyclerView.addItemDecoration(DividerItemDecoration(habitsRecyclerView.context, DividerItemDecoration.VERTICAL))
+        habitsRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                habitsRecyclerView.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         habitAdapter = HabitAdapter(habits)
         habitsRecyclerView.adapter = habitAdapter
         habitAdapter?.onItemClickListener = this
@@ -57,15 +62,14 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(parentFragment != null)
+        if (parentFragment != null)
             onAttachToParentFragment(requireParentFragment())
     }
 
     private fun onAttachToParentFragment(parentFragment: Fragment) {
         try {
             callBack = parentFragment as IHabitItemClick
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             throw IllegalArgumentException("Activity ${parentFragment::class.simpleName} не реализует интерфейс интерфейс ${IHabitItemClick::class.qualifiedName}")
         }
     }
@@ -82,10 +86,17 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         outState.putSerializable(HABITS_KEY, habits)
     }
 
-    override fun onItemClick(habit: Habit) = callBack?.onHabitItemClick(habit) ?: Unit
+    override fun onItemClick(habit: Habit) {
+        callBack?.onHabitItemClick(habit)
+    }
+
+    override fun onDoneButtonClick(doneTarget: Habit) {
+        callBack?.onDoneButtonClick(doneTarget)
+    }
 
     interface IHabitItemClick {
         fun onHabitItemClick(habit: Habit)
+        fun onDoneButtonClick(doneTarget: Habit)
     }
 
     override fun onDestroy() {
