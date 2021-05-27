@@ -40,9 +40,9 @@ class DomainModule {
     fun provideHabitViewModel(
         habit: Habit,
         habitRepo: HabitRepository,
-        lifeCycle: ViewModelStoreOwner
+        viewModelStoreOwner: ViewModelStoreOwner
     ): HabitViewModel {
-        return ViewModelProvider(lifeCycle, object : ViewModelProvider.Factory {
+        return ViewModelProvider(viewModelStoreOwner, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return HabitViewModel(habit, habitRepo) as T
             }

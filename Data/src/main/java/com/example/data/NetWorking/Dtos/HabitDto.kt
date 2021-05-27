@@ -41,6 +41,6 @@ fun RemoteHabit.toDto(): HabitDto = HabitDto(
     if(this.description.isNullOrEmpty()) " " else this.description!!,
     this.type,
     this.priority,
-    this.periodic ?: 0,
-    this.numberRepeating ?: 0,
+    this.periodic,
+    this.numberRepeating,
 this.color?.toAndroidColor() ?: HSVColor().toAndroidColor())
