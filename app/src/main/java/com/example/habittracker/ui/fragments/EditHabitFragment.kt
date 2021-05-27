@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.habittracker.Infostructure.priorityValuesToLocalizationStrings
 import com.example.androidhelper.Infostructure.toAndroidColor
@@ -22,6 +20,7 @@ import com.example.habittracker.HabitApplication
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitViewModel
 import kotlinx.android.synthetic.main.fragment_edit_habit.*
+import javax.inject.Inject
 
 class EditHabitFragment : Fragment() {
 
@@ -34,7 +33,8 @@ class EditHabitFragment : Fragment() {
         }
     }
 
-    private lateinit var habitViewModel: HabitViewModel
+    @Inject
+    lateinit var habitViewModel: HabitViewModel
     private lateinit var priorities: Map<String, Priority>
     private var callBack: IResultCallBack? = null
     val args: EditHabitFragmentArgs by navArgs()
@@ -42,14 +42,12 @@ class EditHabitFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val habitRepo = (requireActivity().application as HabitApplication).applicationComponent
-            .getHabitRepository()
-
-        habitViewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return HabitViewModel(args.habit, habitRepo) as T
-            }
-        }).get(HabitViewModel::class.java)
+        (requireActivity().application as HabitApplication).applicationComponent
+            .habitViewModelSubComponentBuilder()
+            .with(this)
+            .withHabit(args.habit)
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(

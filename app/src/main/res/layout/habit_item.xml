@@ -115,7 +115,7 @@
         android:text="@string/done_habit"
         app:layout_constraintBottom_toBottomOf="@+id/habitColor"
         app:layout_constraintEnd_toStartOf="@+id/detailsButton"
-        app:layout_constraintStart_toEndOf="@+id/habitName" />
+        app:layout_constraintStart_toEndOf="@+id/habitDateOfUpdate" />
 
     <ImageView
         android:id="@+id/detailsButton"

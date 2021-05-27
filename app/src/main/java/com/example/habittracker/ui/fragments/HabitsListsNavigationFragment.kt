@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.domain.Models.Habit
 import com.example.domain.Models.HabitType
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
@@ -18,6 +16,7 @@ import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitsListViewModel
 import kotlinx.android.synthetic.main.fragment_habits.*
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
 
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
@@ -26,22 +25,20 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
         private val LOG_KEY = HabitsListsNavigationFragment::class.java.name
     }
 
-    private lateinit var viewModelHabits: HabitsListViewModel;
+    @Inject
+    lateinit var viewModelHabits: HabitsListViewModel
+
     private lateinit var habitTypedListsFragmentsAdapter: HabitTypedListsFragmentsAdapter
     private var habitClickCallBack: ClickHabitItemCallBack? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val habitRepo = (requireActivity().application as HabitApplication).applicationComponent
-            .getHabitRepository()
-
-        viewModelHabits =
-            ViewModelProvider(requireActivity(), object : ViewModelProvider.Factory {
-                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                    return HabitsListViewModel(habitRepo) as T
-                }
-            }).get(HabitsListViewModel::class.java)
+       (requireActivity().application as HabitApplication).applicationComponent
+           .habitsListViewModelSubComponentBuilder()
+           .with(requireActivity())
+           .build()
+           .inject(this)
     }
 
 
