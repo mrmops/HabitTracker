@@ -3,6 +3,7 @@ package com.example.domain.Models
 import com.example.domain.Infrastructure.HSVColor
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 data class Habit(
@@ -10,8 +11,9 @@ data class Habit(
     var description: String? = null,
     var type: HabitType = HabitType.GOOD,
     var priority: Priority = Priority.NORMAL,
-    var periodic: Int? = null,
-    var numberRepeating: Int? = 0,
+    var periodic: Int = 1,
+    var numberRepeating: Int = 0,
+    val doneDates: MutableList<Date> = ArrayList(),
     var color: HSVColor? = null
 ) : Serializable {
 

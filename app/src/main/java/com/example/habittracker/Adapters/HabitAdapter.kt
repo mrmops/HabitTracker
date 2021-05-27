@@ -22,10 +22,6 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
 
     var onItemClickListener: OnItemClickListener? = null
 
-    interface OnItemClickListener {
-        fun onItemClick(habit: Habit)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         if(viewType == ELEMENT_VIEW_TYPE)
@@ -39,6 +35,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
             val habitViewHolder = holder as HabitViewHolder
             habitViewHolder.itemView.setOnClickListener { onItemClickListener?.onItemClick(habit) }
             habitViewHolder.bind(habit)
+            habitViewHolder.doneButton.setOnClickListener { onItemClickListener?.onDoneButtonClick(habit) }
         }
     }
 
@@ -65,6 +62,7 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
         private val habitDetailsGroup = itemView.habitDetails
         private val habitColor = itemView.habitColor
         private val repeatTextView = itemView.numberRepetitionsTextView
+        val doneButton = itemView.doneHabitButton
 
         init {
             detailsButton.setOnClickListener {
@@ -93,4 +91,10 @@ class HabitAdapter(private var habits: ArrayList<Habit>): RecyclerView.Adapter<R
     }
 
     class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface OnItemClickListener {
+        fun onItemClick(habit: Habit)
+
+        fun onDoneButtonClick(doneTarget: Habit)
+    }
 }

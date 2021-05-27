@@ -59,6 +59,14 @@ class HabitsListViewModel(
         job.cancelChildren()
     }
 
+    fun doneHabit(doneTarget: Habit) = launch(Dispatchers.IO) {
+        habitRepository.doneHabit(doneTarget.serverId)
+    }
+
+    suspend fun getHabitRemainingReps(doneTarget: Habit): Int = withContext(Dispatchers.IO) {
+        return@withContext habitRepository.remainingReps(doneTarget.serverId)
+    }
+
     enum class SortDirection {
         Forward,
         Backward

@@ -86,10 +86,17 @@ class ListHabitFragment() : Fragment(), HabitAdapter.OnItemClickListener {
         outState.putSerializable(HABITS_KEY, habits)
     }
 
-    override fun onItemClick(habit: Habit) = callBack?.onHabitItemClick(habit) ?: Unit
+    override fun onItemClick(habit: Habit) {
+        callBack?.onHabitItemClick(habit)
+    }
+
+    override fun onDoneButtonClick(doneTarget: Habit) {
+        callBack?.onDoneButtonClick(doneTarget)
+    }
 
     interface IHabitItemClick {
         fun onHabitItemClick(habit: Habit)
+        fun onDoneButtonClick(doneTarget: Habit)
     }
 
     override fun onDestroy() {

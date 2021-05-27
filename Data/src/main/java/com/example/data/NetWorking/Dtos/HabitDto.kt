@@ -13,7 +13,7 @@ import kotlin.collections.ArrayList
 class HabitDto(
     @SerializedName("uid") val serverId: UUID?,
     @SerializedName("date") val dateOfUpdate: Date,
-    @SerializedName("done_dates") val doneDates: List<Date>,
+    @SerializedName("done_dates") val doneDates: MutableList<Date>,
     @SerializedName("title") val name: String?,
     @SerializedName("description") val description: String,
     @SerializedName("type") val type: HabitType,
@@ -24,7 +24,7 @@ class HabitDto(
 ) {
 
 
-    fun toHabit(): RemoteHabit = RemoteHabit(name, description, type, priority, periodic, numberRepeating, color.toHSVColor())
+    fun toHabit(): RemoteHabit = RemoteHabit(name, description, type, priority, periodic, numberRepeating, doneDates, color.toHSVColor())
         .let {
             it.serverId = serverId ?: UUID.randomUUID()
             it.dateOfUpdate = dateOfUpdate

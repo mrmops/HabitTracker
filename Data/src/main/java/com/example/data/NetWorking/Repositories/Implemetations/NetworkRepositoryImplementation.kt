@@ -44,11 +44,11 @@ class NetworkRepositoryImplementation(
         }
     }
 
-    override suspend fun doneHabit(doneInfo: Habit) {
+    override suspend fun doneHabit(doneInfo: Habit, doneDate: Date) {
         doWhileNotSuccessWithResult(delay) {
             networkService.doneHabit(
                 HabitDoneDto(
-                    doneInfo.dateOfUpdate ?: Date(), doneInfo.serverId
+                    doneDate, doneInfo.serverId
                 )
             )
         }

@@ -6,15 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.domain.Models.Habit
+import com.example.domain.Models.HabitType
 import com.example.habittracker.Adapters.HabitTypedListsFragmentsAdapter
 import com.example.habittracker.HabitApplication
 import com.example.habittracker.R
 import com.example.habittracker.ui.fragments.viewModels.HabitsListViewModel
 import kotlinx.android.synthetic.main.fragment_habits.*
+import kotlinx.coroutines.*
 
 
 class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemClick {
@@ -70,7 +73,33 @@ class HabitsListsNavigationFragment : Fragment(), ListHabitFragment.IHabitItemCl
             { habits -> habitTypedListsFragmentsAdapter.updateHabits(habits) })
     }
 
-    override fun onHabitItemClick(habit: Habit) = habitClickCallBack?.onHabitClick(habit) ?: Unit
+    override fun onHabitItemClick(habit: Habit) {
+        habitClickCallBack?.onHabitClick(habit)
+    }
+
+    override fun onDoneButtonClick(doneTarget: Habit) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val await = async { viewModelHabits.doneHabit(doneTarget) }
+            await.await()
+
+            val doneRemaining =
+                withContext(Dispatchers.IO) {
+                    viewModelHabits.getHabitRemainingReps(doneTarget)
+                }
+            val message = if (doneTarget.type == HabitType.GOOD) {
+                if (doneRemaining > 0)
+                    requireContext().getString(R.string.good_small_done_message, doneRemaining.toString())
+                else
+                    requireContext().getString(R.string.good_ok_done_message)
+            } else {
+                if (doneRemaining > 0)
+                    requireContext().getString(R.string.bad_small_done_message, doneRemaining.toString())
+                else
+                    requireContext().getString(R.string.bad_ok_done_message)
+            }
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

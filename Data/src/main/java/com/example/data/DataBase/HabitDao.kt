@@ -35,7 +35,7 @@ abstract class HabitDao {
     abstract fun getFilteredAndBackwardSortHabitsByDate(nameFilter: String?): Flow<List<RemoteHabit>>
 
     @Query("SELECT * FROM remotehabit WHERE serverId = (:selectedId) LIMIT 1")
-    abstract fun getHabitById(@TypeConverters(com.example.data.DataBase.Converters.UUIDConverter::class)selectedId: UUID): Flow<RemoteHabit>
+    abstract suspend fun getHabitById(@TypeConverters(com.example.data.DataBase.Converters.UUIDConverter::class)selectedId: UUID): RemoteHabit
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertHabit(remoteHabit: RemoteHabit)

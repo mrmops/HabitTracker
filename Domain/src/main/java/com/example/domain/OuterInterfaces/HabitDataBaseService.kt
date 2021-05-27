@@ -1,4 +1,4 @@
-package com.example.domain.Interfaces
+package com.example.domain.OuterInterfaces
 
 import com.example.domain.Models.Habit
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ interface HabitDataBaseService {
 
     fun getAllHabits(): List<Habit>
 
-    fun getHabitById(selectedId: UUID): Flow<Habit>
+    suspend fun getHabitById(selectedId: UUID): Habit
 
     suspend fun insertHabit(habit: Habit)
 

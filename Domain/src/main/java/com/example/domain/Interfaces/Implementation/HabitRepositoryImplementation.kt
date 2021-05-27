@@ -12,6 +12,10 @@ class HabitRepositoryImplementation(
     private val habitNetworkRepository: HabitNetworkRepository
 ) : HabitRepository {
 
+    companion object{
+        private const val dayMilis = 24 * 60 * 60 * 1000
+    }
+
     override fun getLocalHabits(
         filter: String?,
         revertSort: Boolean
@@ -38,7 +42,23 @@ class HabitRepositoryImplementation(
         updateHabitOrId(habit)
     }
 
-    private suspend fun updateHabitOrId(habit:Habit){
+    override suspend fun doneHabit(habitId: UUID) {
+        val habit = habitDBService.getHabitById(habitId)
+        val doneDate = Date()
+        habit.doneDates.add(doneDate)
+        habitDBService.updateHabit(habit)
+        habitNetworkRepository.doneHabit(habit, doneDate)
+    }
+
+    override suspend fun remainingReps(habitId: UUID): Int {
+        val habit = habitDBService.getHabitById(habitId)
+        val allowableTimeDifference = dayMilis * habit.periodic
+        val currentDateMilis = Date().time
+        return habit.numberRepeating - habit.doneDates.filter { (currentDateMilis - it.time) < allowableTimeDifference }.size
+    }
+
+
+    private suspend fun updateHabitOrId(habit: Habit) {
         val id = addOrUpdateOnServer(habit)
         habit.wasUpdatedLocal = false
         if (!habit.uploadOnServer)

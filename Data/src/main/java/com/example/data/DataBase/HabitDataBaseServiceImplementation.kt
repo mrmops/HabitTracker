@@ -2,7 +2,7 @@ package com.example.data.DataBase
 
 import com.example.data.Models.RemoteHabit
 import com.example.data.Models.Mapper
-import com.example.domain.Interfaces.HabitDataBaseService
+import com.example.domain.OuterInterfaces.HabitDataBaseService
 import com.example.domain.Models.Habit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -19,8 +19,8 @@ class HabitDataBaseServiceImplementation(
 
     override fun getAllHabits(): List<Habit> = mapper.mapList(habitDao.getAllHabits())
 
-    override fun getHabitById(selectedId: UUID): Flow<Habit> =
-        habitDao.getHabitById(selectedId).map { mapHabit(it) }
+    override suspend fun getHabitById(selectedId: UUID): Habit =
+        mapHabit(habitDao.getHabitById(selectedId))
 
     override suspend fun insertHabit(habit: Habit) = habitDao.insertHabit(mapHabit(habit))
 

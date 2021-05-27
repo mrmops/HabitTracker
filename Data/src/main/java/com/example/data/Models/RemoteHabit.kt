@@ -7,21 +7,24 @@ import com.example.domain.Models.HabitType
 import com.example.domain.Models.Priority
 import java.io.Serializable
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity
 @TypeConverters(
     DateConverter::class,
     HabitTypeConverter::class,
     PriorityConverter::class,
-    UUIDConverter::class
+    UUIDConverter::class,
+    DateListConverter::class
 )
 data class RemoteHabit(
     var name: String? = null,
     var description: String? = null,
     var type: HabitType = HabitType.GOOD,
     var priority: Priority = Priority.NORMAL,
-    var periodic: Int? = null,
-    var numberRepeating: Int? = 0,
+    var periodic: Int = 1,
+    var numberRepeating: Int = 0,
+    val doneDates: MutableList<Date> = ArrayList(),
     @Embedded var color: HSVColor? = null
 ) : Serializable {
 
